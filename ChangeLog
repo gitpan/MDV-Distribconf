@@ -1,0 +1,53 @@
+2005-10-28 11:46  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+
+	* MANIFEST, Makefile.PL, perl-MDV-Distribconf.spec: Add spec file
+	  and target to make rpms for Mandriva
+
+2005-10-28 11:24  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+
+	* lib/MDV/: Distribconf.pm, Distribconf/Build.pm: Fix module name
+	  in docs
+
+2005-10-28 11:13  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+
+	* MANIFEST, Makefile.PL: Add ChangeLog
+
+2005-10-28 11:12  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+
+	* lib/MDV/Distribconf.pm: Don't use CVS release for CPAN version
+	  number.
+
+2005-10-28 10:59  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+
+	* MANIFEST: Add test files
+
+2005-10-10 00:12  Olivier Thauvin <thauvin at aerov.jussieu.fr>
+
+	* lib/MDV/Distribconf.pm, t/01distribconf.t,
+	  test/media/media_info/media.cfg: - more tests
+
+2005-10-09 22:56  Olivier Thauvin <thauvin at aerov.jussieu.fr>
+
+	* lib/MDV/Distribconf/Build.pm, t/02distribconf.t: - add test and
+	  proper fix
+
+2005-10-09 20:12  Olivier Thauvin <thauvin at aerov.jussieu.fr>
+
+	* lib/MDV/Distribconf/Build.pm: - fix namespace
+
+2005-10-09 20:05  Olivier Thauvin <thauvin at aerov.jussieu.fr>
+
+	* lib/MDV/Distribconf/Build.pm: - add delvalue()
+
+2005-10-09 19:00  Olivier Thauvin <thauvin at aerov.jussieu.fr>
+
+	* t/: 01distribconf.t, 02distribconf.t: -add basic test
+
+2005-10-09 18:57  Olivier Thauvin <thauvin at aerov.jussieu.fr>
+
+	* MANIFEST, Makefile.PL: - add MANIFEST, Makefile.PL
+
+2005-10-09 18:18  Olivier Thauvin <thauvin at aerov.jussieu.fr>
+
+	* lib/MDV/: Distribconf.pm, Distribconf/Build.pm: - import
+
