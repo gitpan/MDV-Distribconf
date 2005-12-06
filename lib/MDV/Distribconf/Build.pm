@@ -1,4 +1,6 @@
 ##- Nanar <nanardon@mandriva.org>
+##- (c) 2005 Olivier Thauvin
+##- (c) 2005 Mandriva Linux
 ##-
 ##- This program is free software; you can redistribute it and/or modify
 ##- it under the terms of the GNU General Public License as published by
@@ -14,7 +16,7 @@
 ##- along with this program; if not, write to the Free Software
 ##- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
-# $Id: Build.pm,v 1.5 2005/10/28 09:24:03 rgarciasuarez Exp $
+# $Id: Build.pm,v 1.7 2005/12/06 13:49:07 rgarciasuarez Exp $
 
 package MDV::Distribconf::Build;
 
@@ -133,6 +135,8 @@ sub write_mediacfg {
 }
 
 =item $distrib->write_version($version)
+
+Write the VERSION file. Returns 0 on error, 1 on success.
 
 =cut
 

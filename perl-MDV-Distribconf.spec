@@ -1,17 +1,18 @@
 %define dist	MDV-Distribconf
-%define version	1.00
-%define release	1mdk
+%define version	1.01
+%define release	%mkrel 1
 
-Summary:	Perl module to get config from a Mandriva Linux distribution tree
+Summary:	Read and write config of a Mandriva Linux distribution tree
 Name:		perl-%{dist}
 Version:	%{version}
 Release:	%{release}
 License:	GPL
 Group:		Development/Perl
 Source0:	%{dist}-%{version}.tar.bz2
-Url:		http://cvs.mandriva.com/cgi-bin/cvsweb.cgi/soft/perl-%{dist}/
+Url:		http://search.cpan.org/dist/%{dist}/
 BuildRoot:	%{_tmppath}/%{name}-buildroot/
 BuildArch:	noarch
+BuildRequires:	perl perl-Config-IniFiles
 
 %description
 MDV::Distribconf is a module to get/write the configuration of a Mandriva Linux
@@ -42,5 +43,8 @@ rm -rf $RPM_BUILD_ROOT
 %{perl_vendorlib}/MDV/Distribconf.pm
 
 %changelog
+* Tue Dec 06 2005 Rafael Garcia-Suarez <rgarciasuarez@mandriva.com> 1.01-1mdk
+- 1.01
+
 * Fri Oct 28 2005 Rafael Garcia-Suarez <rgarciasuarez@mandriva.com> 1.00-1mdk
 - Initial MDV release

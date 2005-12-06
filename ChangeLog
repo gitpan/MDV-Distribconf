@@ -1,3 +1,20 @@
+2005-12-06 14:49  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+
+	* lib/MDV/Distribconf/Build.pm: There was an undocumented method
+
+2005-12-06 14:21  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+
+	* lib/MDV/: Distribconf.pm, Distribconf/Build.pm: Update copyrights
+	  ; doc nits
+
+2005-12-06 09:25  Michael Scherer <mscherer at mandrake.org>
+
+	* perl-MDV-Distribconf.spec: - use mkrel macro
+
+2005-11-15 11:44  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+
+	* .cvsignore: Ignore MakeMaker build files
+
 2005-10-28 11:46  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
 
 	* MANIFEST, Makefile.PL, perl-MDV-Distribconf.spec: Add spec file

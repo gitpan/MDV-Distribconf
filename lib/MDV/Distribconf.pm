@@ -1,12 +1,12 @@
 package MDV::Distribconf;
 
-# $Id: Distribconf.pm,v 1.4 2005/10/28 09:24:03 rgarciasuarez Exp $
+# $Id: Distribconf.pm,v 1.6 2005/12/06 14:28:10 rgarciasuarez Exp $
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 
 =head1 NAME
 
-MDV::Distribconf - perl module to get config from a Mandriva Linux distribution tree
+MDV::Distribconf - Read and write config of a Mandriva Linux distribution tree
 
 =head1 SYNOPSIS
 
@@ -23,9 +23,9 @@ MDV::Distribconf - perl module to get config from a Mandriva Linux distribution 
 
 =head1 DESCRIPTION
 
-MDV::Distribconf is a module to get/write the configuration of a Mandriva Linux
-distribution tree. This configuration is stored in a file called F<media.cfg>,
-aimed at replacing the old-style F<hdlists> file.
+MDV::Distribconf is a module to get or write the configuration of a Mandriva
+Linux distribution tree. This configuration is stored in a file called
+F<media.cfg>, aimed at replacing the old-style F<hdlists> file.
 
 The format of the F<hdlists> file is limited and doesn't allow to add new
 values without breaking compatibility, while F<media.cfg> is designed for
@@ -321,7 +321,7 @@ defined, the return value is expanded from $media.
 
 If $media is "media_info" or C<undef>, you'll get the global value.
 
-This function doesn't take care about path, see L<getpath>.
+This function doesn't cares about path, see L<getpath> for that.
 
 =cut
 
@@ -390,7 +390,7 @@ The code has been written by Olivier Thauvin <nanardon@mandriva.org> and is
 currently maintained by Rafael Garcia-Suarez <rgarciasuarez@mandriva.com>.
 Thanks to Sylvie Terjan <erinmargault@mandriva.org> for the spell checking.
 
-(c) 2005 Olivier Thauvin
+(c) 2005 Olivier Thauvin ; (c) 2005 Mandriva Linux
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
