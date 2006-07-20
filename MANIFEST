@@ -6,4 +6,5 @@ MANIFEST
 t/01distribconf.t
 t/02distribconf.t
 test/media/media_info/media.cfg
+test2/media/media_info/media.cfg
 META.yml                                 Module meta-data (added by MakeMaker)

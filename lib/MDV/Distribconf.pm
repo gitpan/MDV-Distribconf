@@ -1,8 +1,8 @@
 package MDV::Distribconf;
 
-# $Id: Distribconf.pm 41765 2006-07-20 20:00:12Z nanardon $
+# $Id: Distribconf.pm 41769 2006-07-20 20:15:46Z nanardon $
 
-our $VERSION = '2.00';
+our $VERSION = '2.01';
 
 =head1 NAME
 
