@@ -1,70 +1,158 @@
-2005-12-06 14:49  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+2006-07-20 18:04  nanardon
 
-	* lib/MDV/Distribconf/Build.pm: There was an undocumented method
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: - clean
+	  code
 
-2005-12-06 14:21  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+2006-07-20 17:06  nanardon
 
-	* lib/MDV/: Distribconf.pm, Distribconf/Build.pm: Update copyrights
-	  ; doc nits
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: - since
+	  version 2, media path are allways relative to mediadir
 
-2005-12-06 09:25  Michael Scherer <mscherer at mandrake.org>
+2006-07-20 13:11  nanardon
 
-	* perl-MDV-Distribconf.spec: - use mkrel macro
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: - add
+	  mediacfg version management
 
-2005-11-15 11:44  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+2006-07-12 12:16  nanardon
 
-	* .cvsignore: Ignore MakeMaker build files
+	* soft/rpm/MDV-Distribconf, soft/rpm/MDV-Distribconf-Checks,
+	  soft/rpm/MDV-Packdrakeng, soft/rpm/perl-MDV-Distribconf,
+	  soft/rpm/perl-MDV-Distribconf-Checks,
+	  soft/rpm/perl-MDV-Packdrakeng: - rename perl module directories
 
-2005-10-28 11:46  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+2006-06-09 21:20  nanardon
 
-	* MANIFEST, Makefile.PL, perl-MDV-Distribconf.spec: Add spec file
-	  and target to make rpms for Mandriva
+	* soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf.pm,
+	  soft/rpm/perl-MDV-Distribconf/trunk/t/01distribconf.t: - add
+	  settree() function
+	* soft/rpm/perl-MDV-Distribconf/trunk/MANIFEST: - remove META.yml
+	  from MANIFEST, seems it is not generate anymore
 
-2005-10-28 11:24  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+2006-06-09 21:18  nanardon
 
-	* lib/MDV/: Distribconf.pm, Distribconf/Build.pm: Fix module name
-	  in docs
+	* soft/rpm/perl-MDV-Distribconf/trunk/Makefile.PL: - avoid copy of
+	  source and spec into %_topdir
 
-2005-10-28 11:13  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+2006-01-07 23:43  othauvin
 
-	* MANIFEST, Makefile.PL: Add ChangeLog
+	* soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: -
+	  Fix hdlists parsing for very old distro, because nobody took
+	  care about what they did
 
-2005-10-28 11:12  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+2005-12-06 14:28  rgarciasuarez
 
-	* lib/MDV/Distribconf.pm: Don't use CVS release for CPAN version
-	  number.
+	* soft/rpm/perl-MDV-Distribconf/trunk/ChangeLog,
+	  soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf.pm,
+	  soft/rpm/perl-MDV-Distribconf/trunk/perl-MDV-Distribconf.spec:
+	  1.01
 
-2005-10-28 10:59  Rafael Garcia-Suarez <rgarciasuarez at mandriva.com>
+2005-12-06 13:49  rgarciasuarez
 
-	* MANIFEST: Add test files
+	* soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf/Build.pm:
+	  There was an undocumented method
 
-2005-10-10 00:12  Olivier Thauvin <thauvin at aerov.jussieu.fr>
+2005-12-06 13:21  rgarciasuarez
 
-	* lib/MDV/Distribconf.pm, t/01distribconf.t,
-	  test/media/media_info/media.cfg: - more tests
+	* soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf.pm,
+	  soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf/Build.pm:
+	  Update copyrights ; doc nits
 
-2005-10-09 22:56  Olivier Thauvin <thauvin at aerov.jussieu.fr>
+2005-12-06 08:25  mscherer
 
-	* lib/MDV/Distribconf/Build.pm, t/02distribconf.t: - add test and
-	  proper fix
+	* soft/rpm/perl-MDV-Distribconf/trunk/perl-MDV-Distribconf.spec: -
+	  use mkrel macro
 
-2005-10-09 20:12  Olivier Thauvin <thauvin at aerov.jussieu.fr>
+2005-11-15 10:44  rgarciasuarez
 
-	* lib/MDV/Distribconf/Build.pm: - fix namespace
+	* soft/rpm/perl-MDV-Distribconf/trunk,
+	  soft/rpm/perl-MDV-Distribconf/trunk/.cvsignore: Ignore MakeMaker
+	  build files
 
-2005-10-09 20:05  Olivier Thauvin <thauvin at aerov.jussieu.fr>
+2005-10-28 09:53  rgarciasuarez
 
-	* lib/MDV/Distribconf/Build.pm: - add delvalue()
+	* soft/rpm/perl-MDV-Distribconf/trunk/ChangeLog: Update changes
+	  (this is 1.00)
 
-2005-10-09 19:00  Olivier Thauvin <thauvin at aerov.jussieu.fr>
+2005-10-28 09:46  rgarciasuarez
 
-	* t/: 01distribconf.t, 02distribconf.t: -add basic test
+	* soft/rpm/perl-MDV-Distribconf/trunk/MANIFEST,
+	  soft/rpm/perl-MDV-Distribconf/trunk/Makefile.PL,
+	  soft/rpm/perl-MDV-Distribconf/trunk/perl-MDV-Distribconf.spec:
+	  Add spec file and target to make rpms for Mandriva
 
-2005-10-09 18:57  Olivier Thauvin <thauvin at aerov.jussieu.fr>
+2005-10-28 09:24  rgarciasuarez
 
-	* MANIFEST, Makefile.PL: - add MANIFEST, Makefile.PL
+	* soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf.pm,
+	  soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf/Build.pm:
+	  Fix module name in docs
 
-2005-10-09 18:18  Olivier Thauvin <thauvin at aerov.jussieu.fr>
+2005-10-28 09:13  rgarciasuarez
 
-	* lib/MDV/: Distribconf.pm, Distribconf/Build.pm: - import
+	* soft/rpm/perl-MDV-Distribconf/trunk/ChangeLog,
+	  soft/rpm/perl-MDV-Distribconf/trunk/MANIFEST,
+	  soft/rpm/perl-MDV-Distribconf/trunk/Makefile.PL: Add ChangeLog
+
+2005-10-28 09:12  rgarciasuarez
+
+	* soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf.pm:
+	  Don't use CVS release for CPAN version number.
+
+2005-10-28 08:59  rgarciasuarez
+
+	* soft/rpm/perl-MDV-Distribconf/trunk/MANIFEST: Add test files
+
+2005-10-09 22:12  othauvin
+
+	* soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf.pm,
+	  soft/rpm/perl-MDV-Distribconf/trunk/t/01distribconf.t,
+	  soft/rpm/perl-MDV-Distribconf/trunk/test,
+	  soft/rpm/perl-MDV-Distribconf/trunk/test/media,
+	  soft/rpm/perl-MDV-Distribconf/trunk/test/media/media_info,
+	  soft/rpm/perl-MDV-Distribconf/trunk/test/media/media_info/media.cfg:
+	  - more tests
+
+2005-10-09 20:56  othauvin
+
+	* soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf/Build.pm,
+	  soft/rpm/perl-MDV-Distribconf/trunk/t/02distribconf.t: - add
+	  test and proper fix
+
+2005-10-09 18:12  othauvin
+
+	* soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf/Build.pm:
+	  - fix namespace
+
+2005-10-09 18:05  othauvin
+
+	* soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf/Build.pm:
+	  - add delvalue()
+
+2005-10-09 17:00  othauvin
+
+	* soft/rpm/perl-MDV-Distribconf/trunk/t,
+	  soft/rpm/perl-MDV-Distribconf/trunk/t/01distribconf.t,
+	  soft/rpm/perl-MDV-Distribconf/trunk/t/02distribconf.t: -add
+	  basic test
+
+2005-10-09 16:57  othauvin
+
+	* soft/rpm/perl-MDV-Distribconf/trunk/MANIFEST,
+	  soft/rpm/perl-MDV-Distribconf/trunk/Makefile.PL: - add MANIFEST,
+	  Makefile.PL
+
+2005-10-09 16:18  othauvin
+
+	* soft/rpm/perl-MDV-Distribconf/trunk/lib,
+	  soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV,
+	  soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf,
+	  soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf.pm,
+	  soft/rpm/perl-MDV-Distribconf/trunk/lib/MDV/Distribconf/Build.pm:
+	  - import
+
+2005-10-09 16:18  
+
+	* soft/rpm/perl-MDV-Distribconf/branches,
+	  soft/rpm/perl-MDV-Distribconf/tags,
+	  soft/rpm/perl-MDV-Distribconf/trunk: New repository initialized
+	  by cvs2svn.
 

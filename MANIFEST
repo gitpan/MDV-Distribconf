@@ -3,8 +3,7 @@ lib/MDV/Distribconf/Build.pm
 lib/MDV/Distribconf.pm
 Makefile.PL
 MANIFEST
-META.yml                                 Module meta-data (added by MakeMaker)
-perl-MDV-Distribconf.spec
 t/01distribconf.t
 t/02distribconf.t
 test/media/media_info/media.cfg
+META.yml                                 Module meta-data (added by MakeMaker)

@@ -1,8 +1,8 @@
 package MDV::Distribconf;
 
-# $Id: Distribconf.pm,v 1.6 2005/12/06 14:28:10 rgarciasuarez Exp $
+# $Id: Distribconf.pm 41765 2006-07-20 20:00:12Z nanardon $
 
-our $VERSION = '1.01';
+our $VERSION = '2.00';
 
 =head1 NAME
 
@@ -158,6 +158,11 @@ use strict;
 use warnings;
 use Config::IniFiles;
 
+sub mymediacfg_version {
+    $VERSION =~ /^(\d+)\./;
+    $1
+}
+
 =head2 MDV::Distribconf->new($root)
 
 Returns a new MDV::Distribconf object, C<$root> being the top level
@@ -166,13 +171,19 @@ directory of the tree.
 =cut
 
 sub new {
-    my ($class, $path) = @_;
-    bless {
+    my ($class, $path, $mediacfg_version) = @_;
+    my $distrib = {
 	root => $path,
 	infodir => '',
 	mediadir => '',
 	cfg => new Config::IniFiles(-default => 'media_info', -allowcontinue => 1),
-    }, $class;
+    };
+
+    if (!defined($mediacfg_version)) {
+        $distrib->{cfg}->newval('media_info', 'mediacfg_version', mymediacfg_version());
+    }
+
+    bless($distrib, $class)
 }
 
 =head2 $distrib->load()
@@ -219,6 +230,53 @@ sub loadtree {
     return 1;
 }
 
+=head2 check_mediacfg_version($wanted_version)
+
+Check current distrib use this version or lesser, which mean it is supported.
+
+=cut
+
+sub check_mediacfg_version {
+    my ($distrib, $wanted_version) = @_;
+
+    # Check wanted version is <= than the module
+    # Otherwise the module can't properly handle it
+    return 0 if (mymediacfg_version() < $wanted_version);
+
+    return 0 if ($wanted_version < $distrib->getvalue(undef, 'mediacfg_version'));
+
+    return 1
+}
+
+=head2 $distrib->settree($spec)
+
+Virtual set the internal structure of the distrib.
+
+$spec can be 'mandrake' or 'mandriva' to automatically load a know structure
+(old and new fascion, or a hashref:
+
+  mediadir => 'media',
+  infodir => 'media/media_info',
+
+=cut
+
+sub settree {
+    my ($distrib, $spec) = @_;
+
+    if (ref($spec) eq 'HASH') {
+        foreach (qw(infodir mediadir)) {
+            $distrib->{$_} = $spec->{$_} || '';
+        }
+    } elsif ($spec && $spec =~ /mandrake/i) {
+        $distrib->{infodir} = "Mandrake/base";
+        $distrib->{mediadir} = "Mandrake";
+    } else { # finally it can be everything, we do not care
+        $distrib->{infodir} = "media/media_info";
+        $distrib->{mediadir} = "media";
+    }
+}
+
+
 =head2 $distrib->parse_hdlists($hdlists)
 
 Reads the F<hdlists> file whose path is given by the parameter $hdlist,
@@ -242,9 +300,12 @@ sub parse_hdlists {
         length or next;
         my ($options, %media);
         ($options, @media{qw/hdlist path name size/}) = /^\s*(?:(.*):)?(\S+)\s+(\S+)\s+([^(]*)(?:\s+\((\w+)\))?$/;
+        if (!$media{hdlist}) { # Hack because hdlists format really sucks
+            ($options, @media{qw/hdlist path name size/}) = /^\s*(?:(.*):)?(\S+)\s+(\S+)\s+(.*)$/;
+        }
         if ($options) {
-	    $media{$_} = 1 foreach split /:/, $options;
-	}
+            $media{$_} = 1 foreach split /:/, $options;
+        }
         $media{name} =~ s/\s*$//;
         $media{path} =~ s!^$distrib->{mediadir}/+!!;
         foreach (qw/hdlist name size/, $options ? split(/:/, $options) : ()) {
@@ -298,7 +359,8 @@ sub parse_mediacfg {
     (-f $mediacfg && -r _) &&
         ($distrib->{cfg} = new Config::IniFiles( -file => $mediacfg, -default => 'media_info', -allowcontinue => 1))
             or return 0;
-    return 1;
+
+    return $distrib->check_mediacfg_version(mymediacfg_version());
 }
 
 =head2 $distrib->listmedia()
@@ -331,17 +393,18 @@ sub getvalue {
 
     my $default = "";
     for ($var) {
-        /^synthesis$/		and $default = 'synthesis.' . lc($distrib->getvalue($media, 'hdlist'));
+        /^synthesis$/	and $default = 'synthesis.' . lc($distrib->getvalue($media, 'hdlist'));
         /^hdlist$/		and $default = 'hdlist_' . lc($distrib->getvalue($media, 'name')) . '.cz';
         /^pubkey$/		and $default = 'pubkey_' . lc($distrib->getvalue($media, 'name'));
         /^name$/		and $default = $media;
         $default =~ s![/ ]+!_!g;
-        /^path$/		and return $media;
-        /^root$/		and return $distrib->{root};
-        /^VERSION$/		and do { $default = 'VERSION'; last };
-        /^product$/		and do { $default = 'Download'; last };
-        /^(?:tag|branch)$/	and do { $default = ''; last };
-        /^(?:media|info)dir$/	and do { $default = $distrib->{$var}; last };
+        /^path$/		       and return $media;
+        /^root$/		       and return $distrib->{root};
+        /^mediacfg_version$/   and do { $default = '1'; last };
+        /^VERSION$/		       and do { $default = 'VERSION'; last };
+        /^product$/		       and do { $default = 'Download'; last };
+        /^(?:tag|branch)$/	   and do { $default = ''; last };
+        /^(?:media|info)dir$/  and do { $default = $distrib->{$var}; last };
     }
     return $distrib->{cfg}->val($media, $var, $default);
 }
@@ -359,7 +422,14 @@ sub getpath {
     $var ||= ""; # Avoid undef value
     my $val = $distrib->getvalue($media, $var);
     $var =~ /^(?:root|VERSION)$/ and return $val;
-    return ($val =~ m!/! ? "" : ($var eq 'path' ? $distrib->{mediadir} : $distrib->{infodir} ) . "/") . $val;
+    my $thispath = $var eq 'path' ? $distrib->{mediadir} : $distrib->{infodir};
+    return 
+        ($distrib->getvalue(undef, 'mediacfg_version') >= 2 ?
+            $thispath :
+            ($val =~ m!/! ? '' : 
+                $thispath
+            )
+        ) . '/' . $val;
 }
 
 =head2 $distrib->getfullpath($media, $var)
