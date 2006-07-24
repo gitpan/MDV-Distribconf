@@ -16,7 +16,7 @@
 ##- along with this program; if not, write to the Free Software
 ##- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
-# $Id: Build.pm 38877 2006-07-12 12:16:51Z nanardon $
+# $Id: Build.pm 31944 2005-12-06 13:49:07Z rgarciasuarez $
 
 package MDV::Distribconf::Build;
 

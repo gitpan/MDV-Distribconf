@@ -1,8 +1,8 @@
 package MDV::Distribconf;
 
-# $Id: Distribconf.pm 41769 2006-07-20 20:15:46Z nanardon $
+# $Id: Distribconf.pm 41981 2006-07-24 13:59:34Z nanardon $
 
-our $VERSION = '2.01';
+our $VERSION = '2.02';
 
 =head1 NAME
 
@@ -423,13 +423,13 @@ sub getpath {
     my $val = $distrib->getvalue($media, $var);
     $var =~ /^(?:root|VERSION)$/ and return $val;
     my $thispath = $var eq 'path' ? $distrib->{mediadir} : $distrib->{infodir};
-    return 
-        ($distrib->getvalue(undef, 'mediacfg_version') >= 2 ?
-            $thispath :
-            ($val =~ m!/! ? '' : 
-                $thispath
-            )
-        ) . '/' . $val;
+    if ($distrib->getvalue(undef, 'mediacfg_version') >= 2) {
+        return $thispath . ($media ? '/' . $val : '');
+    } else {
+        return ($val =~ m!/! ? "" : 
+            ($var eq 'path' ? $distrib->{mediadir} : $distrib->{infodir} )
+        . "/") . $val;
+    }
 }
 
 =head2 $distrib->getfullpath($media, $var)
