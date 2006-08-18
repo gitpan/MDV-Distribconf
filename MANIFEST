@@ -1,6 +1,7 @@
 ChangeLog
 lib/MDV/Distribconf/Build.pm
 lib/MDV/Distribconf.pm
+lib/MDV/Distribconf/MediaCFG.pm
 Makefile.PL
 MANIFEST
 t/01distribconf.t

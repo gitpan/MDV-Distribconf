@@ -1,3 +1,68 @@
+2006-08-18 14:09  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/MediaCFG.pm,
+	  soft/rpm/MDV-Distribconf/trunk/t/03mediacfg.t: - more test,
+	  provide basic functions
+
+2006-08-18 10:36  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/MANIFEST,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/MediaCFG.pm,
+	  soft/rpm/MDV-Distribconf/trunk/t/03mediacfg.t: - add
+	  MDV::Distribconf::MediaCFG
+
+2006-08-01 09:51  rafael
+
+	* soft/rpm/MDV-Distribconf/trunk/.cvsignore,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: Nits,
+	  copyright, english fixes
+
+2006-07-24 13:59  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: - fix bug
+	  about global path value
+
+2006-07-24 13:58  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/t/01distribconf.t: - factorize
+	  test for all media_cfg version
+
+2006-07-24 13:53  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/t/01distribconf.t: - remove
+	  useless print
+
+2006-07-20 20:15  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/MANIFEST,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: - add
+	  missing file :\, 2.01 then
+
+2006-07-20 20:00  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/MANIFEST,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: -
+	  releasing 2.00
+
+2006-07-20 19:56  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/ChangeLog,
+	  soft/rpm/MDV-Distribconf/trunk/Makefile.PL,
+	  soft/rpm/MDV-Distribconf/trunk/perl-MDV-Distribconf.spec: - do
+	  no longer build rpms from here
+
+2006-07-20 19:40  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: - fix
+	  getpath()
+
+2006-07-20 19:39  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/t/01distribconf.t,
+	  soft/rpm/MDV-Distribconf/trunk/test2,
+	  soft/rpm/MDV-Distribconf/trunk/test2/media/media_info/media.cfg:
+	  - fix test for new behaviour
+
 2006-07-20 18:04  nanardon
 
 	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: - clean

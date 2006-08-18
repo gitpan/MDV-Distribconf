@@ -1,8 +1,8 @@
 package MDV::Distribconf;
 
-# $Id: Distribconf.pm 41981 2006-07-24 13:59:34Z nanardon $
+# $Id: Distribconf.pm 56785 2006-08-18 15:35:07Z nanardon $
 
-our $VERSION = '2.02';
+our $VERSION = '2.03';
 
 =head1 NAME
 
@@ -232,7 +232,8 @@ sub loadtree {
 
 =head2 check_mediacfg_version($wanted_version)
 
-Check current distrib use this version or lesser, which mean it is supported.
+Check that the current distrib uses this version or lesser, which means it is
+supported.
 
 =cut
 
@@ -393,18 +394,18 @@ sub getvalue {
 
     my $default = "";
     for ($var) {
-        /^synthesis$/	and $default = 'synthesis.' . lc($distrib->getvalue($media, 'hdlist'));
+        /^synthesis$/		and $default = 'synthesis.' . lc($distrib->getvalue($media, 'hdlist'));
         /^hdlist$/		and $default = 'hdlist_' . lc($distrib->getvalue($media, 'name')) . '.cz';
         /^pubkey$/		and $default = 'pubkey_' . lc($distrib->getvalue($media, 'name'));
         /^name$/		and $default = $media;
         $default =~ s![/ ]+!_!g;
-        /^path$/		       and return $media;
-        /^root$/		       and return $distrib->{root};
-        /^mediacfg_version$/   and do { $default = '1'; last };
-        /^VERSION$/		       and do { $default = 'VERSION'; last };
-        /^product$/		       and do { $default = 'Download'; last };
-        /^(?:tag|branch)$/	   and do { $default = ''; last };
-        /^(?:media|info)dir$/  and do { $default = $distrib->{$var}; last };
+        /^path$/		and return $media;
+        /^root$/		and return $distrib->{root};
+        /^mediacfg_version$/	and do { $default = '1'; last };
+        /^VERSION$/		and do { $default = 'VERSION'; last };
+        /^product$/		and do { $default = 'Download'; last };
+        /^(?:tag|branch)$/	and do { $default = ''; last };
+        /^(?:media|info)dir$/	and do { $default = $distrib->{$var}; last };
     }
     return $distrib->{cfg}->val($media, $var, $default);
 }
@@ -426,7 +427,7 @@ sub getpath {
     if ($distrib->getvalue(undef, 'mediacfg_version') >= 2) {
         return $thispath . ($media ? '/' . $val : '');
     } else {
-        return ($val =~ m!/! ? "" : 
+        return ($val =~ m!/! ? "" :
             ($var eq 'path' ? $distrib->{mediadir} : $distrib->{infodir} )
         . "/") . $val;
     }
@@ -460,7 +461,7 @@ The code has been written by Olivier Thauvin <nanardon@mandriva.org> and is
 currently maintained by Rafael Garcia-Suarez <rgarciasuarez@mandriva.com>.
 Thanks to Sylvie Terjan <erinmargault@mandriva.org> for the spell checking.
 
-(c) 2005 Olivier Thauvin ; (c) 2005 Mandriva Linux
+(c) 2005 Olivier Thauvin ; (c) 2005, 2006 Mandriva
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

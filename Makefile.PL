@@ -1,4 +1,4 @@
-# $Id: Makefile.PL 41764 2006-07-20 19:56:19Z nanardon $
+# $Id: Makefile.PL 56785 2006-08-18 15:35:07Z nanardon $
 
 use 5.008;
 use strict;
@@ -8,11 +8,11 @@ use ExtUtils::MakeMaker;
 
 sub MY::postamble {
     <<MAKE;
-.PHONY: ChangeLog
-
-ChangeLog:
+ChangeLog: \$(TO_INST_PM)
 	svn2cl -o ChangeLog || :
 	rm -f *.bak || :
+
+change_dist: ChangeLog tardist
 
 MAKE
 }
@@ -20,4 +20,5 @@ MAKE
 WriteMakefile(
     NAME	 => 'MDV::Distribconf',
     VERSION_FROM => 'lib/MDV/Distribconf.pm',
+    dist => { DIST_DEFAULT => 'change_dist' },
 );
