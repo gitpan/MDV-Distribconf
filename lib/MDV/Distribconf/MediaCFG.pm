@@ -3,7 +3,7 @@ package MDV::Distribconf::MediaCFG;
 use strict;
 use warnings;
 
-our $VERSION = (qq$Revision: 56778 $ =~ /(\d+)/)[0];
+our $VERSION = (qq$Revision: 56853 $ =~ /(\d+)/)[0];
 
 =head1 NAME
 
@@ -22,6 +22,18 @@ my $value = {};
 =head2 GLOBAL VALUES
 
 This value can only be set into 'media_info' section.
+
+=cut
+
+$value->{mediacfg_version} = { 
+    validation => sub {
+        my ($val) = @_;
+        if ($val !~ /^(\d|.)+$/) {
+            return ("should be a number");
+        }
+        return ();
+    },
+};
 
 =head3 mediacfg_version
 
@@ -99,7 +111,7 @@ the list of media holding binaries rpms build by srpms from this media.
 
 =cut
 
-$value->{debugfor} = {};
+$value->{debug_for} = {};
 
 =head3 debugfor
 

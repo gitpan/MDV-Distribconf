@@ -16,7 +16,7 @@
 ##- along with this program; if not, write to the Free Software
 ##- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
-# $Id: Build.pm 31944 2005-12-06 13:49:07Z rgarciasuarez $
+# $Id: Build.pm 56855 2006-08-18 23:17:45Z nanardon $
 
 package MDV::Distribconf::Build;
 
@@ -34,7 +34,7 @@ use strict;
 use warnings;
 use MDV::Distribconf;
 
-our @ISA = qw(MDV::Distribconf);
+use base qw(MDV::Distribconf MDV::Distribconf::Checks);
 our $VERSION = $MDV::Distribconf::VERSION;
 
 =item MDV::Distribconf::Build->new($root_of_distrib)
@@ -167,63 +167,6 @@ sub write_version {
     return 1;
 }
 
-
-=item $distrib->check($fhout)
-
-Performs basic checks on the distribution and prints to $fhout (STDERR by
-default) warnings and errors found. Returns the number of errors reported.
-
-=cut
-
-sub check {
-    my ($distrib, $fhout) = @_;
-    $fhout ||= \*STDERR;
-
-    my $error = 0;
-
-    my $report_err = sub {
-        my ($l, $f, @msg) = @_;
-        $l eq 'E' and $error++;
-        printf $fhout "$l: $f\n", @msg;
-    };
-
-    $distrib->listmedia or $report_err->('W', "No media found in this config");
-
-    # Checking no overlap
-    foreach my $var (qw/hdlist synthesis path/) {
-        my %e;
-        foreach ($distrib->listmedia) {
-            my $v = $distrib->getpath($_, $var);
-            push @{$e{$v}}, $_;
-        }
-
-        foreach my $key (keys %e) {
-            if (@{$e{$key}} > 1) {
-                $report_err->('E', "media %s have same %s (%s)",
-                    join (", ", @{$e{$key}}),
-                    $var,
-                    $key
-                );
-            }
-        }
-    }
-
-    foreach my $media ($distrib->listmedia) {
-	-d $distrib->getfullpath($media, 'path') or $report_err->(
-	    'E', "dir %s does't exist for media '%s'",
-	    $distrib->getpath($media, 'path'),
-	    $media
-	);
-	foreach (qw/hdlist synthesis pubkey/) {
-	    -f $distrib->getfullpath($media, $_) or $report_err->(
-		'E', "$_ %s doesn't exist for media '%s'",
-		$distrib->getpath($media, $_),
-		$media
-	    );
-	}
-    }
-    return $error;
-}
 
 1;
 

@@ -1,8 +1,8 @@
 package MDV::Distribconf;
 
-# $Id: Distribconf.pm 56785 2006-08-18 15:35:07Z nanardon $
+# $Id: Distribconf.pm 56863 2006-08-19 00:55:51Z nanardon $
 
-our $VERSION = '2.03';
+our $VERSION = '2.04';
 
 =head1 NAME
 
@@ -375,6 +375,18 @@ sub listmedia {
     return grep { $_ ne 'media_info' } $distrib->{cfg}->Sections;
 }
 
+=head2  $distrib->mediaexists($media)
+
+Return true if $media exists
+
+=cut
+
+sub mediaexists {
+    my ($distrib, $media) = @_;
+    $media ||= 'media_info';
+    return ($media eq 'media_info' || $distrib->{cfg}->SectionExists($media));
+}
+
 =head2 $distrib->getvalue($media, $var)
 
 Returns the $var value for $media, or C<undef> if the value is not set.
@@ -391,6 +403,8 @@ This function doesn't cares about path, see L<getpath> for that.
 sub getvalue {
     my ($distrib, $media, $var) = @_;
     $media ||= 'media_info';
+
+    $distrib->mediaexists($media) or return;
 
     my $default = "";
     for ($var) {
@@ -420,6 +434,7 @@ of media, location of index files, and paths set in the configuration.
 
 sub getpath {
     my ($distrib, $media, $var) = @_;
+    $distrib->mediaexists($media) or return;
     $var ||= ""; # Avoid undef value
     my $val = $distrib->getvalue($media, $var);
     $var =~ /^(?:root|VERSION)$/ and return $val;
@@ -444,7 +459,8 @@ prefixed by the 'root' path. This is a shortcut for:
 
 sub getfullpath {
     my $distrib = shift;
-    return $distrib->getpath(undef, 'root') . '/' . $distrib->getpath(@_);
+    my $path = $distrib->getpath(@_) or return;
+    return $distrib->getpath(undef, 'root') . '/' . $path;
 }
 
 1;

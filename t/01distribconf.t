@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# $Id: 01distribconf.t 41980 2006-07-24 13:58:58Z nanardon $
+# $Id: 01distribconf.t 56863 2006-08-19 00:55:51Z nanardon $
 
 use strict;
 use Test::More tests => 35;
@@ -12,7 +12,7 @@ ok(my $dconf = MDV::Distribconf->new('/dev/null'), "Can get new MDV::Distribconf
 ok(!$dconf->load(), "loading wrong distrib give error");
 }
 
-foreach my $path (qw(test test2)) {
+foreach my $path (qw(testdata/test testdata/test2)) {
     ok(my $dconf = MDV::Distribconf->new($path), "Can get new MDV::Distribconf");
     ok($dconf->load(), "Can load conf");
 
