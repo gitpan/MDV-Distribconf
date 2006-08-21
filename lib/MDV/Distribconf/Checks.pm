@@ -16,7 +16,7 @@
 ##- along with this program; if not, write to the Free Software
 ##- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
-# $Id: Checks.pm 56939 2006-08-21 10:21:27Z nanardon $
+# $Id: Checks.pm 57001 2006-08-21 14:34:00Z nanardon $
 
 package MDV::Distribconf::Checks;
 
@@ -49,9 +49,10 @@ sub _report_err {
         'UNSYNC_HDLIST' => 'E',
         'UNSYNC_MD5' => 'E',
         'WRONG_CONFIG' => 'W',
-        'MISSING_MEDIA' => 'E',
+        'MISSING_MEDIA' => 'W',
+        'MISSING_MEDIADIR' => 'E',
         'SAME_INDEX' => 'E',
-        'NOMEDIA' => 'W',
+        'NOMEDIA' => 'E',
         'MISSING_INDEX' => 'E',
         'MISSING_INFO' => 'W',
     );
@@ -205,7 +206,7 @@ sub check_media_coherency {
     foreach my $media ($distrib->listmedia) {
 	-d $distrib->getfullpath($media, 'path') or $error += _report_err(
 	    $fhout,
-		'MISSING_MEDIA', "dir %s does't exist for media `%s'",
+		'MISSING_MEDIADIR', "dir %s does't exist for media `%s'",
 	    $distrib->getpath($media, 'path'),
 	    $media
 	);

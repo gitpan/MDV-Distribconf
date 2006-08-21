@@ -5,8 +5,8 @@ use warnings;
 use MDV::Distribconf;
 
 our $VERSION =
-    MDV::Distribconf::mymediacfg_version() . '.' .
-    (qq$Revision: 56939 $ =~ /(\d+)/)[0];
+    (qq$Revision: 56971 $ =~ /(\d+)/)[0] . '.' .
+    MDV::Distribconf::mymediacfg_version();
 
 =head1 NAME
 

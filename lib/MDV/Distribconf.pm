@@ -2,7 +2,7 @@ package MDV::Distribconf;
 
 # $Id: Distribconf.pm 56936 2006-08-21 10:18:16Z nanardon $
 
-our $VERSION = '3.00';
+our $VERSION = '3.01';
 
 =head1 NAME
 

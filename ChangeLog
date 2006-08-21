@@ -1,3 +1,139 @@
+2006-08-21 12:02  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/MediaCFG.pm:
+	  - fix version to please CPAN
+
+2006-08-21 10:22  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/MANIFEST: - update MANIFEST
+
+2006-08-21 10:21  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Checks.pm,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/MediaCFG.pm:
+	  - update check and doc
+
+2006-08-21 10:19  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/bin/checkdistrib: - output to
+	  STDOUT
+
+2006-08-21 10:18  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/test3,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/test3/media,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/test3/media/media_info,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/test3/media/media_info/media.cfg:
+	  - add support of variable
+
+2006-08-21 10:16  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/t/01distribconf.t,
+	  soft/rpm/MDV-Distribconf/trunk/t/03checks.t,
+	  soft/rpm/MDV-Distribconf/trunk/t/04mediacfg.t,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/test3,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/test4,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/testa,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/testb: - rename test
+	  files to keep testN for main version
+
+2006-08-19 12:44  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/MediaCFG.pm:
+	  - fix typo
+
+2006-08-19 01:17  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Checks.pm: -
+	  check name overlapping
+
+2006-08-19 01:16  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/MANIFEST,
+	  soft/rpm/MDV-Distribconf/trunk/Makefile.PL: - add checkdistrib
+	  tool
+
+2006-08-19 00:55  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/MANIFEST,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Checks.pm,
+	  soft/rpm/MDV-Distribconf/trunk/t/01distribconf.t,
+	  soft/rpm/MDV-Distribconf/trunk/t/04mediacfg.t,
+	  soft/rpm/MDV-Distribconf/trunk/test,
+	  soft/rpm/MDV-Distribconf/trunk/test2,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/README,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/VERSION,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/media,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/test,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/test2,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/test3,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/test3/README,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/test3/VERSION,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/test3/media,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/test4,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2: - group test
+	  directories
+	  - add mediaexists functions
+	  - fix some test
+
+2006-08-18 23:17  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/bin/checkdistrib,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Build.pm,
+	  soft/rpm/MDV-Distribconf/trunk/t/04mediacfg.t: - avoid
+	  dependencies on main modules
+
+2006-08-18 23:01  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/MANIFEST,
+	  soft/rpm/MDV-Distribconf/trunk/bin,
+	  soft/rpm/MDV-Distribconf/trunk/bin/checkdistrib,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Build.pm,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Checks.pm,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/MediaCFG.pm,
+	  soft/rpm/MDV-Distribconf/trunk/t/03checks.t,
+	  soft/rpm/MDV-Distribconf/trunk/t/03mediacfg.t,
+	  soft/rpm/MDV-Distribconf/trunk/t/04mediacfg.t,
+	  soft/rpm/MDV-Distribconf/trunk/testdata,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/media/media_info/media.cfg,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/README,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/VERSION,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/first,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/first/media_info,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/first/media_info/MD5SUM,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/first_debug,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/first_src,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/first_src/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/first_src/media_info/MD5SUM,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/media_info,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/media_info/MD5SUM,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/media_info/compss,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/media_info/depslist.ordered,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/media_info/media.cfg,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/media_info/provides,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/second,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/second/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/second/media_info/MD5SUM,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/second_src,
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/second_src/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata2/media/second_src/media_info/MD5SUM:
+	  - add check distrib functionnalities
+
 2006-08-18 15:35  nanardon
 
 	* soft/rpm/MDV-Distribconf/trunk/ChangeLog,
