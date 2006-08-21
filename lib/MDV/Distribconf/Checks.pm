@@ -16,7 +16,7 @@
 ##- along with this program; if not, write to the Free Software
 ##- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
-# $Id: Checks.pm 56867 2006-08-19 01:17:12Z nanardon $
+# $Id: Checks.pm 56939 2006-08-21 10:21:27Z nanardon $
 
 package MDV::Distribconf::Checks;
 
@@ -43,6 +43,32 @@ sub new {
     bless({}, $_[0]);
 }
 
+sub _report_err {
+    my ($out, $err_code, $fmt, @args) = @_;
+    my %errs = (
+        'UNSYNC_HDLIST' => 'E',
+        'UNSYNC_MD5' => 'E',
+        'WRONG_CONFIG' => 'W',
+        'MISSING_MEDIA' => 'E',
+        'SAME_INDEX' => 'E',
+        'NOMEDIA' => 'W',
+        'MISSING_INDEX' => 'E',
+        'MISSING_INFO' => 'W',
+    );
+    my $message = sprintf($fmt, @args);
+
+    if (ref $out eq 'CODE') {
+        $out->(
+            errcode => $err_code || '?',
+            level => $errs{$err_code} || '?',
+            message => $message,
+        );
+    } else {
+        printf $out "%s: %s\n", $errs{$err_code} || '?', $message;
+    }
+    return($errs{$err_code} || '?' eq 'E' ? 1 : 0)
+}
+
 =item $distrib->check_config
 
 =cut
@@ -53,12 +79,6 @@ sub check_config {
 
     my $error = 0;
 
-    my $report_err = sub {
-        my ($l, $f, @msg) = @_;
-        $l eq 'E' and $error++;
-        printf $fhout "$l: $f\n", @msg;
-    };
-
     foreach my $var ($self->{cfg}->Parameters('media_info')) {
         $self->{cfg}->val('media_info', $var) or next;
         my @er = MDV::Distribconf::MediaCFG::_valid_param(
@@ -67,7 +87,11 @@ sub check_config {
             $self->{cfg}->val('media_info', $var),
         );
         foreach (@er) {
-            $report_err->('E', "%s %s: %s", 'media_info', $var, $_);
+            $error += _report_err(
+                $fhout,
+                'WRONG_CONFIG',
+                "%s %s: %s", 'media_info', $var, $_
+            );
         }
     }
     foreach my $media ($self->listmedia()) {
@@ -79,21 +103,42 @@ sub check_config {
                 $self->{cfg}->val($media, $var),
             );
             foreach (@er) {
-                $report_err->('E', "%s %s: %s", $media, $var, $_);
+                $error += _report_err(
+                    $fhout,
+                    'WRONG_CONFIG',
+                    "%s %s: %s", $media, $var, $_
+                );
             }
         }
 
         # checking inter media reference
+        my %cross_value = (
+            srpms => 'rpms',
+            rpms => 'srpms',
+        );
         foreach my $linkmedia (qw(srpms rpms debug_for)) {
             foreach my $sndmedia (split(/ /, $self->getvalue($media, $linkmedia, ''))) {
                 if (!$self->mediaexists($sndmedia)) {
-                    $report_err->(
-                        'E',
-                         "%s refer as %s to non existant %s",
+                    $error += _report_err(
+                        $fhout,
+                        'MISSING_MEDIA',
+                         "`%s' refer as %s to non existant `%s'",
                         $media,
                         $linkmedia,
                         $sndmedia,
                     );
+                } elsif($cross_value{$linkmedia}) {
+                    if(!grep { $media eq $_ } 
+                        split(/ /, 
+                            $self->getvalue($sndmedia, $cross_value{$linkmedia})
+                        )) {
+                        $error += _report_err(
+                            $fhout,
+                            'WRONG_CONFIG',
+                            "`%s' has not `%s' as %s",
+                            $sndmedia, $media, $cross_value{$linkmedia},
+                        );
+                    }
                 }
             }
         }
@@ -105,9 +150,10 @@ sub check_config {
 
         foreach (keys %foundname) {
             if (@{$foundname{$_}} > 1) {
-                $report_err->(
-                    'E',
-                    "%s have same name (%s)",
+                $error += _report_err(
+                    $fhout,
+                    'WRONG_CONFIG',
+                    "`%s' have same name (%s)",
                     join(', ', @{$foundname{$_}}),
                     $_,
                 );
@@ -130,13 +176,9 @@ sub check_media_coherency {
 
     my $error = 0;
 
-    my $report_err = sub {
-        my ($l, $f, @msg) = @_;
-        $l eq 'E' and $error++;
-        printf $fhout "$l: $f\n", @msg;
-    };
-
-    $distrib->listmedia or $report_err->('W', "No media found in this config");
+    $distrib->listmedia or $error += _report_err(
+        'NOMEDIA', "No media found in this config"
+    );
 
     # Checking no overlap
     foreach my $var (qw/hdlist synthesis path/) {
@@ -148,7 +190,10 @@ sub check_media_coherency {
 
         foreach my $key (keys %e) {
             if (@{$e{$key}} > 1) {
-                $report_err->('E', "media %s have same %s (%s)",
+                $error += _report_err(
+                    $fhout,
+                    'SAME_INDEX', 
+                    "media `%s' have same %s (%s)",
                     join (", ", @{$e{$key}}),
                     $var,
                     $key
@@ -158,18 +203,29 @@ sub check_media_coherency {
     }
 
     foreach my $media ($distrib->listmedia) {
-	-d $distrib->getfullpath($media, 'path') or $report_err->(
-	    'E', "dir %s does't exist for media '%s'",
+	-d $distrib->getfullpath($media, 'path') or $error += _report_err(
+	    $fhout,
+		'MISSING_MEDIA', "dir %s does't exist for media `%s'",
 	    $distrib->getpath($media, 'path'),
 	    $media
 	);
-	foreach (qw/hdlist synthesis pubkey/) {
-	    -f $distrib->getfullpath($media, $_) or $report_err->(
-		'E', "$_ %s doesn't exist for media '%s'",
+	foreach (qw/hdlist synthesis/) {
+	    -f $distrib->getfullpath($media, $_) or $error += _report_err(
+        $fhout,
+		'MISSING_INDEX', "$_ %s doesn't exist for media `%s'",
 		$distrib->getpath($media, $_),
 		$media
 	    );
 	}
+    foreach (qw/pubkey/) {
+	    -f $distrib->getfullpath($media, $_) or $error += _report_err(
+        $fhout,
+		'MISSING_INFO', "$_ %s doesn't exist for media `%s'",
+		$distrib->getpath($media, $_),
+		$media
+	    );
+	}
+
     }
     return $error;
 }
@@ -191,6 +247,7 @@ sub check_index_sync {
     my $hdlist = $self->getfullpath($media, 'hdlist');
     my $rpmspath = $self->getfullpath($media, 'path');
     my @rpms = sort map { m:.*/+(.*): ; $1 } glob("$rpmspath/*.rpm");
+    -f $hdlist or return 0; # avoid warnings
     if (my $pack = MDV::Packdrakeng->open(archive => $hdlist)) {
         my (undef, $files, undef) = $pack->getcontent();
         my @hdrs = sort @{$files || []};
@@ -258,28 +315,24 @@ sub checkdistrib {
 
     my $error = 0;
 
-    my $report_err = sub {
-        my ($l, $f, @msg) = @_;
-        $l eq 'E' and $error++;
-        printf $fhout "$l: $f\n", @msg;
-    };
-
     $error += $self->check_config($fhout);
     $error += $self->check_media_coherency($fhout);
 
     foreach my $media ($self->listmedia) {
         if(!$self->check_index_sync($media)) {
-            $report_err->(
-                'E',
-                "hdlist for media '%s' is not sync with its rpms",
+            $error += _report_err(
+                $fhout,
+                'UNSYNC_HDLIST',
+                "hdlist for media `%s' is not sync with its rpms",
                 $media,
             );
         }
 
         if(!$self->check_media_md5($media)) {
-            $report_err->(
-                'E',
-                "md5sum for media '%s' is not ok",
+            $error += _report_err(
+                $fhout,
+                'UNSYNC_MD5',
+                "md5sum for media `%s' is not ok",
                 $media,
             );
         }

@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# $Id: checkdistrib 56855 2006-08-18 23:17:45Z nanardon $
+# $Id: checkdistrib 56937 2006-08-21 10:19:01Z nanardon $
 
 use strict;
 use warnings;
@@ -28,7 +28,7 @@ foreach my $tree (@distribs) {
         );
     }
     
-    $error += $mdc->checkdistrib;
+    $error += $mdc->checkdistrib(\*STDOUT);
 }
 
 exit($error);

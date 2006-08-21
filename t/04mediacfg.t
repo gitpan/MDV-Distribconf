@@ -18,7 +18,7 @@ is(MDV::Distribconf::MediaCFG::_valid_param('foo', 'size', '1d'),  1,
 is(MDV::Distribconf::MediaCFG::_valid_param('foo', 'size', 'coin'), 1,
     "non valide size value");
 
-my $mdc = MDV::Distribconf::Build->new("testdata/test3");
+my $mdc = MDV::Distribconf::Build->new("testdata/testa");
 
 ok($mdc->load, "Can't load distrib tree");
 

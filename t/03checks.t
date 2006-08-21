@@ -5,6 +5,18 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;
+use Test::More tests => 4;
 
 use_ok('MDV::Distribconf::Checks');
+
+MDV::Distribconf::Checks::_report_err(
+    sub {
+        my %err = @_;
+        is($err{errcode}, 'UNSYNC_HDLIST', 'get proper errcode');
+        is($err{level}, 'E', 'get proper err level');
+        ok($err{message}, 'get message');
+    },
+    'UNSYNC_HDLIST',
+    'test message',
+);
+

@@ -1,8 +1,8 @@
 package MDV::Distribconf;
 
-# $Id: Distribconf.pm 56863 2006-08-19 00:55:51Z nanardon $
+# $Id: Distribconf.pm 56936 2006-08-21 10:18:16Z nanardon $
 
-our $VERSION = '2.04';
+our $VERSION = '3.00';
 
 =head1 NAME
 
@@ -387,6 +387,25 @@ sub mediaexists {
     return ($media eq 'media_info' || $distrib->{cfg}->SectionExists($media));
 }
 
+sub _expand {
+    my ($self, $media, $value, $level) = @_;
+    $value or return $value; # being lazy
+    # unsupported if < 3
+    $self->getvalue(undef, 'mediacfg_version') < 3 and return $value;
+    $media ||= 'media_info';
+    $level ||= 0; # avoid infinite loop
+    ++$level >= 15 and return $value;
+
+    $value =~ s[\%{(\w+)}][
+        $self->getvalue($media, $1) || '%{' . $1 . '}';
+    ]eg;
+    $value =~ s[\${(\w+)}][
+        $self->getvalue('media_info', $1, $level) || '${' . $1 . '}';
+    ]eg;
+
+    $value
+}
+
 =head2 $distrib->getvalue($media, $var)
 
 Returns the $var value for $media, or C<undef> if the value is not set.
@@ -401,27 +420,28 @@ This function doesn't cares about path, see L<getpath> for that.
 =cut
 
 sub getvalue {
-    my ($distrib, $media, $var) = @_;
+    my ($distrib, $media, $var, $level) = @_;
     $media ||= 'media_info';
 
     $distrib->mediaexists($media) or return;
 
     my $default = "";
     for ($var) {
-        /^synthesis$/		and $default = 'synthesis.' . lc($distrib->getvalue($media, 'hdlist'));
-        /^hdlist$/		and $default = 'hdlist_' . lc($distrib->getvalue($media, 'name')) . '.cz';
-        /^pubkey$/		and $default = 'pubkey_' . lc($distrib->getvalue($media, 'name'));
+        /^synthesis$/		and $default = 'synthesis.' . lc($distrib->getvalue($media, 'hdlist', $level));
+        /^hdlist$/		and $default = 'hdlist_' . lc($distrib->getvalue($media, 'name', $level)) . '.cz';
+        /^pubkey$/		and $default = 'pubkey_' . lc($distrib->getvalue($media, 'name', $level));
         /^name$/		and $default = $media;
         $default =~ s![/ ]+!_!g;
         /^path$/		and return $media;
         /^root$/		and return $distrib->{root};
-        /^mediacfg_version$/	and do { $default = '1'; last };
+        /^mediacfg_version$/	and 
+            return $distrib->{cfg}->val('media_info', 'mediacfg_version') || 1;
         /^VERSION$/		and do { $default = 'VERSION'; last };
         /^product$/		and do { $default = 'Download'; last };
         /^(?:tag|branch)$/	and do { $default = ''; last };
         /^(?:media|info)dir$/	and do { $default = $distrib->{$var}; last };
     }
-    return $distrib->{cfg}->val($media, $var, $default);
+    return $distrib->_expand($media, $distrib->{cfg}->val($media, $var, $default), $level);
 }
 
 =head2 $distrib->getpath($media, $var)
@@ -470,6 +490,9 @@ __END__
 =head1 SEE ALSO
 
 gendistrib(1)
+L<MDV::Distribconf::Build>
+L<MDV::Distribconf::MediaCFG>
+L<MDV::Distribconf::Checks>
 
 =head1 AUTHOR
 

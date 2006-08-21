@@ -2,8 +2,11 @@ package MDV::Distribconf::MediaCFG;
 
 use strict;
 use warnings;
+use MDV::Distribconf;
 
-our $VERSION = (qq$Revision: 56853 $ =~ /(\d+)/)[0];
+our $VERSION =
+    MDV::Distribconf::mymediacfg_version() . '.' .
+    (qq$Revision: 56939 $ =~ /(\d+)/)[0];
 
 =head1 NAME
 
@@ -12,6 +15,39 @@ MDV::Distribconf::MediaCFG
 =head1 DESCRIPTION
 
 This module provide documenation of know value in media.cfg
+
+=head1 MEDIACFG VERSION
+
+The media.cfg version is given by the 'mediacfg_version' in 'media_info'.
+This value should be set is you want to use new features that can change the
+behavior of this module.
+
+=head2 1
+
+This is the default and the first version of mediacfg format.
+
+=head2 2
+
+Since this version, all media path are relative to the media_info path.
+Before, media was relative to media_info except media with / relative to
+the root of the distrib.
+
+=head2 3
+
+This version allow to include in value variable in form of refering to
+other value set in the file:
+
+=over 4
+
+=item ${...}
+
+refer to a global value (distribution version, arch...)
+
+=item %{...}
+
+refer to a value proper to the media (name, ...)
+
+=back
 
 =head1 VALUE
 
@@ -39,7 +75,7 @@ $value->{mediacfg_version} = {
 
 The version of the media_cfg
 
-See L<MDV::Distribconf> for more detail about it
+See L<MEDIACFG VERSION>
 
 =cut
 
@@ -113,7 +149,7 @@ the list of media holding binaries rpms build by srpms from this media.
 
 $value->{debug_for} = {};
 
-=head3 debugfor
+=head3 debug_for
 
 If the media contain debug rpms, it contain the list of media for which
 rpms are debug rpms.
@@ -182,3 +218,6 @@ sub _value_info {
 }
 
 1;
+
+__END__
+

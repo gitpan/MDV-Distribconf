@@ -1,9 +1,17 @@
 #!/usr/bin/perl
 
-# $Id: 01distribconf.t 56863 2006-08-19 00:55:51Z nanardon $
+# $Id: 01distribconf.t 56934 2006-08-21 10:16:29Z nanardon $
 
 use strict;
-use Test::More tests => 35;
+use Test::More;
+
+my @testdpath = qw(
+    testdata/test
+    testdata/test2
+    testdata/test3
+);
+
+plan tests => 14 + 13 * scalar(@testdpath);
 
 use_ok('MDV::Distribconf');
 
@@ -12,12 +20,12 @@ ok(my $dconf = MDV::Distribconf->new('/dev/null'), "Can get new MDV::Distribconf
 ok(!$dconf->load(), "loading wrong distrib give error");
 }
 
-foreach my $path (qw(testdata/test testdata/test2)) {
+foreach my $path (@testdpath) {
     ok(my $dconf = MDV::Distribconf->new($path), "Can get new MDV::Distribconf");
     ok($dconf->load(), "Can load conf");
 
     ok(scalar($dconf->listmedia) == 8, "Can list all media");
-    ok(grep { $_ eq 'main' } $dconf->listmedia, "list properly media");
+    ok((grep { $_ eq 'main' } $dconf->listmedia), "list properly media");
 
     ok($dconf->getvalue(undef, 'version') eq '2006.0', "Can get global value");
     ok($dconf->getvalue('main', 'version') eq '2006.0', "Can get global value via media");
@@ -48,4 +56,35 @@ $dconf->settree({
   infodir => 'infodir',
 });
 ok($dconf->getpath(undef, 'media_info') =~ m!^/*infodir/?$!, "Can get media_info path"); # vim color: */
+}
+
+{
+    # test for %{} ${} var
+    my $dc = MDV::Distribconf->new('testdata/test3');
+    $dc->load();
+    is(
+        $dc->_expand(undef, '${version}'),
+        '2006.0',
+        'expand works'
+    );
+    is(
+        $dc->_expand('jpackage', '%{name}'),
+        'jpackage',
+        'expand works'
+    );
+    is(
+        $dc->_expand('jpackage', '${version}'),
+        '2006.0',
+        'expand works'
+    );
+    is(
+        $dc->_expand(undef, '%{foo}'),
+        '%{foo}',
+        'expand works'
+    );
+    is(
+        $dc->getvalue('jpackage', 'hdlist'),
+        'hdlist_jpackage.cz',
+        'getvalue works'
+    );
 }
