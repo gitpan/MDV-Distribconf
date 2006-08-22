@@ -1,8 +1,8 @@
 package MDV::Distribconf;
 
-# $Id: Distribconf.pm 57075 2006-08-22 00:50:26Z nanardon $
+# $Id: Distribconf.pm 57483 2006-08-22 13:11:54Z nanardon $
 
-our $VERSION = '3.02';
+our $VERSION = '3.03';
 
 =head1 NAME
 
@@ -473,6 +473,14 @@ sub getpath {
     }
 }
 
+=head2 $distrib->getmediapath($media, $var)
+
+This function does the same than getpath except it return the path proper
+to the media for files having doble location (index for example).
+
+=cut
+
+
 sub getmediapath {
     my ($distrib, $media, $var) = @_;
     my %files = (
@@ -500,6 +508,12 @@ sub getfullpath {
     my $path = $distrib->getpath(@_) or return;
     return $distrib->getpath(undef, 'root') . '/' . $path;
 }
+=head2 $distrib->getfullmediapath($media, $var)
+
+This function does the same than getpath except it return the path proper
+to the media for files having doble location (index for example).
+
+=cut
 
 sub getfullmediapath {
     my $distrib = shift;

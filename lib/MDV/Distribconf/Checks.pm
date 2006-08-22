@@ -16,7 +16,7 @@
 ##- along with this program; if not, write to the Free Software
 ##- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
-# $Id: Checks.pm 57076 2006-08-22 01:06:56Z nanardon $
+# $Id: Checks.pm 57465 2006-08-22 10:43:54Z nanardon $
 
 package MDV::Distribconf::Checks;
 
@@ -101,7 +101,7 @@ sub check_config {
             my @er = MDV::Distribconf::MediaCFG::_valid_param(
                 'media_info',
                 $var,
-                $self->{cfg}->val($media, $var),
+                $self->getvalue($media, $var),
             );
             foreach (@er) {
                 $error += _report_err(
@@ -110,40 +110,47 @@ sub check_config {
                     "%s %s: %s", $media, $var, $_
                 );
             }
-        }
-
-        # checking inter media reference
-        my %cross_value = (
-            srpms => 'rpms',
-            rpms => 'srpms',
-        );
-        foreach my $linkmedia (qw(srpms rpms debug_for)) {
-            foreach my $sndmedia (split(/ /, $self->getvalue($media, $linkmedia, ''))) {
+            my $varinfo = MDV::Distribconf::MediaCFG::_value_info($var) || {};
+            if ($varinfo->{deny}) {
+                if ($self->getvalue($media, $varinfo->{deny})) {
+                    $error += _report_err(
+                        $fhout,
+                        'WRONG_CONFIG',
+                        '%s and %s cannot be set together (media %s)',
+                        $var, $varinfo->{deny}, $media
+                    );
+                }
+            }
+            if ($varinfo->{ismedialist} || $varinfo->{cross}) {
+            foreach my $sndmedia (split(/ /, $self->getvalue($media, $var, ''))) {
                 if (!$self->mediaexists($sndmedia)) {
                     $error += _report_err(
                         $fhout,
                         'MISSING_MEDIA',
                          "`%s' refer as %s to non existant `%s'",
                         $media,
-                        $linkmedia,
+                        $var,
                         $sndmedia,
                     );
-                } elsif($cross_value{$linkmedia}) {
+                } elsif($varinfo->{cross}) {
                     if(!grep { $media eq $_ } 
                         split(/ /, 
-                            $self->getvalue($sndmedia, $cross_value{$linkmedia})
+                            $self->getvalue($sndmedia, $varinfo->{cross})
                         )) {
                         $error += _report_err(
                             $fhout,
                             'WRONG_CONFIG',
                             "`%s' has not `%s' as %s",
-                            $sndmedia, $media, $cross_value{$linkmedia},
+                            $sndmedia, $media, $varinfo->{cross},
                         );
                     }
                 }
             }
+            }
         }
     }
+
+    # checking overlap
     {
         my %foundname;
         push(@{$foundname{$self->getvalue($_, 'name')}}, $_) 

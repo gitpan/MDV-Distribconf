@@ -4,9 +4,7 @@ use strict;
 use warnings;
 use MDV::Distribconf;
 
-our $VERSION =
-    (qq$Revision: 56971 $ =~ /(\d+)/)[0] . '.' .
-    MDV::Distribconf::mymediacfg_version();
+our $VERSION = (qq$Revision: 57465 $ =~ /(\d+)/)[0];
 
 =head1 NAME
 
@@ -129,7 +127,7 @@ The file holding public gpg key used to sign rpms in this media.
 
 =cut
 
-$value->{srpms} = { deny => 'rpms' };
+$value->{srpms} = { deny => 'rpms', cross => 'rpms', ismedialist => 1 };
 
 =head3 srpms
 
@@ -138,7 +136,7 @@ the list of medias holding corresponding sources rpms.
 
 =cut
 
-$value->{rpms} = { deny => 'srpms' };
+$value->{rpms} = { deny => 'srpms', cross => 'srpms', ismedialist => 1 };
 
 =head3 rpms
 
@@ -147,7 +145,16 @@ the list of media holding binaries rpms build by srpms from this media.
 
 =cut
 
-$value->{debug_for} = {};
+$value->{updates_for} = { ismedialist => 1 };
+
+=head3 debug_for
+
+If the media contain updates, it contain the list of media for which
+rpms are updates.
+
+=cut
+
+$value->{debug_for} = { ismedialist => 1 };
 
 =head3 debug_for
 
