@@ -1,3 +1,351 @@
+2006-08-22 01:06  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Checks.pm: -
+	  check also synthesis existence before saying a media is sync
+
+2006-08-22 00:50  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: - add
+	  MD5SUM as supported value
+
+2006-08-22 00:40  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Checks.pm,
+	  soft/rpm/MDV-Distribconf/trunk/t/01distribconf.t: - add
+	  getmediapath variant function, improve tests
+
+2006-08-21 21:17  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: - on the
+	  road for 3.02
+
+2006-08-21 21:12  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/MANIFEST: - update MANIFEST
+
+2006-08-21 21:10  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/MANIFEST,
+	  soft/rpm/MDV-Distribconf/trunk/t/01history.t: - fix tests for
+	  old distrib
+
+2006-08-21 21:08  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.0/alpha: -
+	  remove broken dist
+
+2006-08-21 21:00  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/t/01history.t,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.0,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.0/amd64,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.0/amd64/Mandrake,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.0/amd64/Mandrake/base,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.0/amd64/Mandrake/base/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.0/i586,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.0/i586/Mandrake,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.0/i586/Mandrake/base,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.0/i586/Mandrake/base/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.1,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.1/i586,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.1/i586/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.1/i586/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.1/i586/media/media_info/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.1/ppc,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.1/ppc/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.1/ppc/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.1/ppc/media/media_info/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.2,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.2/i586,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.2/i586/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.2/i586/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.2/i586/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.2/i586/media/media_info/media.cfg,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.2/ppc,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.2/ppc/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.2/ppc/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.2/ppc/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.2/x86_64,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.2/x86_64/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.2/x86_64/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/10.2/x86_64/media/media_info/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2006.0,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2006.0/i586,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2006.0/i586/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2006.0/i586/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2006.0/i586/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2006.0/i586/media/media_info/media.cfg,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2006.0/x86_64,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2006.0/x86_64/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2006.0/x86_64/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2006.0/x86_64/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2006.0/x86_64/media/media_info/media.cfg,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2007.0,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2007.0/i586,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2007.0/i586/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2007.0/i586/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2007.0/i586/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2007.0/i586/media/media_info/media.cfg,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2007.0/x86_64,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2007.0/x86_64/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2007.0/x86_64/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2007.0/x86_64/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/2007.0/x86_64/media/media_info/media.cfg,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/i586,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/i586/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/i586/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/i586/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/i586/media/media_info/media.cfg,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/ia64,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/ia64/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/ia64/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/ia64/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/ppc,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/ppc/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/ppc/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/ppc/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/ppc/media/media_info/media.cfg,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/sparc,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/sparc/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/sparc/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/sparc/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/sparc/media/media_info/media.cfg,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/sparc64,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/sparc64/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/sparc64/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/sparc64/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/sparc64/media/media_info/media.cfg,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/x86_64,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/x86_64/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/x86_64/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/x86_64/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/devel/cooker/x86_64/media/media_info/media.cfg,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.0,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.0/i586,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.0/i586/Mandrake,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.0/i586/Mandrake/base,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.0/i586/Mandrake/base/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.1,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.1/i586,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.1/i586/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.1/i586/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.1/i586/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.1/x86_64,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.1/x86_64/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.1/x86_64/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.1/x86_64/media/media_info/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.2,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.2/i586,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.2/i586/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.2/i586/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.2/i586/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.2/i586/media/media_info/media.cfg,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.2/x86_64,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.2/x86_64/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.2/x86_64/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/10.2/x86_64/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/2006.0,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/2006.0/i586,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/2006.0/i586/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/2006.0/i586/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/2006.0/i586/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/2006.0/i586/media/media_info/media.cfg,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/2006.0/x86_64,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/2006.0/x86_64/media,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/2006.0/x86_64/media/media_info,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/2006.0/x86_64/media/media_info/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/2006.0/x86_64/media/media_info/media.cfg,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.0,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.0/x86_64,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.0/x86_64/Mandrake,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.0/x86_64/Mandrake/base,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.0/x86_64/Mandrake/base/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.1,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.1/i586,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.1/i586/Mandrake,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.1/i586/Mandrake/base,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.1/i586/Mandrake/base/hdlists,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.1/ppc,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.1/ppc/Mandrake,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.1/ppc/Mandrake/base,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.1/ppc/Mandrake/base/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.2,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.2/i586,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.2/i586/Mandrake,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.2/i586/Mandrake/base,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/official/9.2/i586/Mandrake/base/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/7.2,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/7.2/i586,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/7.2/i586/Mandrake,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/7.2/i586/Mandrake/base,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/7.2/i586/Mandrake/base/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/7.2/sparc,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/7.2/sparc/Mandrake,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/7.2/sparc/Mandrake/base,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/7.2/sparc/Mandrake/base/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.0,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.0/alpha,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.0/alpha/Mandrake,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.0/alpha/Mandrake/base,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.0/alpha/Mandrake/base/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.0/i586,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.0/i586/Mandrake,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.0/i586/Mandrake/base,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.0/i586/Mandrake/base/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.1,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.1/i586,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.1/i586/Mandrake,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.1/i586/Mandrake/base,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.1/i586/Mandrake/base/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.2,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.2/i586,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.2/i586/Mandrake,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.2/i586/Mandrake/base,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.2/i586/Mandrake/base/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.2/ppc,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.2/ppc/Mandrake,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.2/ppc/Mandrake/base,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/8.2/ppc/Mandrake/base/hdlists,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/9.0,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/9.0/i586,
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/9.0/i586/Mandrake,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/9.0/i586/Mandrake/base,
+	  
+	  soft/rpm/MDV-Distribconf/trunk/testdata/history/old/9.0/i586/Mandrake/base/hdlists:
+	  - add test over all old mdv on mirrors
+
+2006-08-21 14:34  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Checks.pm: -
+	  better error handling
+
 2006-08-21 12:02  nanardon
 
 	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/MediaCFG.pm:

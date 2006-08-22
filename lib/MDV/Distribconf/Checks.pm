@@ -16,7 +16,7 @@
 ##- along with this program; if not, write to the Free Software
 ##- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
-# $Id: Checks.pm 57001 2006-08-21 14:34:00Z nanardon $
+# $Id: Checks.pm 57076 2006-08-22 01:06:56Z nanardon $
 
 package MDV::Distribconf::Checks;
 
@@ -244,11 +244,17 @@ Return 1 if no problem were found
 =cut
 
 sub check_index_sync {
-    my ($self, $media) = @_;
-    my $hdlist = $self->getfullpath($media, 'hdlist');
+    my ($self, $media, $submedia) = @_;
     my $rpmspath = $self->getfullpath($media, 'path');
+    my $hdlist = ($submedia && -f $self->getfullpath($media, 'path') . '/media_info') ?
+        $self->getfullmediapath($media, 'hdlist') :
+        $self->getfullpath($media, 'hdlist');
+    my $synthesis = ($submedia && -f $self->getfullpath($media, 'path') . '/media_info') ?
+        $self->getfullmediapath($media, 'synthesis') :
+        $self->getfullpath($media, 'synthesis');
+
     my @rpms = sort map { m:.*/+(.*): ; $1 } glob("$rpmspath/*.rpm");
-    -f $hdlist or return 0; # avoid warnings
+    -f $hdlist && -f $synthesis or return 0; # avoid warnings
     if (my $pack = MDV::Packdrakeng->open(archive => $hdlist)) {
         my (undef, $files, undef) = $pack->getcontent();
         my @hdrs = sort @{$files || []};

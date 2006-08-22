@@ -1,8 +1,8 @@
 package MDV::Distribconf;
 
-# $Id: Distribconf.pm 56936 2006-08-21 10:18:16Z nanardon $
+# $Id: Distribconf.pm 57075 2006-08-22 00:50:26Z nanardon $
 
-our $VERSION = '3.01';
+our $VERSION = '3.02';
 
 =head1 NAME
 
@@ -221,9 +221,11 @@ sub loadtree {
     if (-d "$distrib->{root}/media/media_info") {
         $distrib->{infodir} = "media/media_info";
         $distrib->{mediadir} = "media";
+        $distrib->{mediainfodir} = '/media_info';
     } elsif (-d "$distrib->{root}/Mandrake/base") {
         $distrib->{infodir} = "Mandrake/base";
         $distrib->{mediadir} = "Mandrake";
+        $distrib->{mediainfodir} = '';
     } else {
         return 0;
     }
@@ -271,9 +273,11 @@ sub settree {
     } elsif ($spec && $spec =~ /mandrake/i) {
         $distrib->{infodir} = "Mandrake/base";
         $distrib->{mediadir} = "Mandrake";
+        $distrib->{mediainfodir} = '';
     } else { # finally it can be everything, we do not care
         $distrib->{infodir} = "media/media_info";
         $distrib->{mediadir} = "media";
+        $distrib->{mediainfodir} = '/media_info';
     }
 }
 
@@ -438,6 +442,7 @@ sub getvalue {
             return $distrib->{cfg}->val('media_info', 'mediacfg_version') || 1;
         /^VERSION$/		and do { $default = 'VERSION'; last };
         /^product$/		and do { $default = 'Download'; last };
+        /^MD5SUM$/      and do { $default = 'MD5SUM'; last };
         /^(?:tag|branch)$/	and do { $default = ''; last };
         /^(?:media|info)dir$/	and do { $default = $distrib->{$var}; last };
     }
@@ -468,6 +473,19 @@ sub getpath {
     }
 }
 
+sub getmediapath {
+    my ($distrib, $media, $var) = @_;
+    my %files = (
+        pubkey => 'pubkey',
+        hdlist => 'hdlist.cz',
+        synthesis => 'synthesis.hdlist.cz',
+        MD5SUM => 'MD5SUM',
+        infodir => '',
+    );
+    $var eq 'path' and return $distrib->getpath($media, 'path');
+    return $distrib->getpath($media, 'path') . $distrib->{mediainfodir} . "/$files{$var}";
+}
+
 =head2 $distrib->getfullpath($media, $var)
 
 Does the same thing than getpath(), but the return value will be
@@ -482,6 +500,13 @@ sub getfullpath {
     my $path = $distrib->getpath(@_) or return;
     return $distrib->getpath(undef, 'root') . '/' . $path;
 }
+
+sub getfullmediapath {
+    my $distrib = shift;
+    my $path = $distrib->getmediapath(@_) or return;
+    return $distrib->getpath(undef, 'root') . '/' . $path;
+}
+
 
 1;
 
