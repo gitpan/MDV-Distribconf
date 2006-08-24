@@ -1,8 +1,8 @@
 package MDV::Distribconf;
 
-# $Id: Distribconf.pm 57912 2006-08-24 16:09:04Z nanardon $
+# $Id: Distribconf.pm 58013 2006-08-24 22:50:09Z nanardon $
 
-our $VERSION = '3.04';
+our $VERSION = '3.05';
 
 =head1 NAME
 
@@ -304,16 +304,16 @@ sub parse_hdlists {
         chomp;
         length or next;
         my ($options, %media);
-        ($options, @media{qw/hdlist path name size/}) = /^\s*(?:(.*):)?(\S+)\s+(\S+)\s+([^(]*)(?:\s+\((\w+)\))?$/;
+        ($options, @media{qw(hdlist path name size)}) = /^\s*(?:(.*):)?(\S+)\s+(\S+)\s+([^(]*)(?:\s+\((\w+)\))?$/;
         if (!$media{hdlist}) { # Hack because hdlists format really sucks
-            ($options, @media{qw/hdlist path name size/}) = /^\s*(?:(.*):)?(\S+)\s+(\S+)\s+(.*)$/;
+            ($options, @media{qw(hdlist path name size)}) = /^\s*(?:(.*):)?(\S+)\s+(\S+)\s+(.*)$/;
         }
         if ($options) {
             $media{$_} = 1 foreach split /:/, $options;
         }
         $media{name} =~ s/\s*$//;
         $media{path} =~ s!^$distrib->{mediadir}/+!!;
-        foreach (qw/hdlist name size/, $options ? split(/:/, $options) : ()) {
+        foreach (qw(hdlist name size), $options ? split(/:/, $options) : ()) {
             $distrib->{cfg}->newval($media{path}, $_, $media{$_})
 		or die "Can't set value [$_]\n";
         }
@@ -400,12 +400,12 @@ sub _expand {
     $level ||= 0; # avoid infinite loop
     ++$level >= 15 and return $value;
 
-    $value =~ s[\%{(\w+)}][
+    $value =~ s@\%{(\w+)}@
         $self->getvalue($media, $1) || '%{' . $1 . '}';
-    ]eg;
-    $value =~ s[\${(\w+)}][
+    @eg;
+    $value =~ s@\${(\w+)}@
         $self->getvalue('media_info', $1, $level) || '${' . $1 . '}';
-    ]eg;
+    @eg;
 
     $value
 }
@@ -466,7 +466,7 @@ sub getpath {
     $distrib->mediaexists($media) or return;
     $var ||= ""; # Avoid undef value
     my $val = $distrib->getvalue($media, $var);
-    $var =~ /^(?:root|VERSION)$/ and return $val;
+    $var =~ /^(?:root|VERSION|(?:media|info)dir)$/ and return $val;
     my $thispath = $var eq 'path' ? $distrib->{mediadir} : $distrib->{infodir};
     if ($distrib->getvalue(undef, 'mediacfg_version') >= 2) {
         return $thispath . '/' . $val;

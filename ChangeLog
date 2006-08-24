@@ -1,3 +1,53 @@
+2006-08-24 18:39  tv
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: minimal
+	  changes to make it parsable by perl_checker
+
+2006-08-24 16:24  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Build.pm: -
+	  fix VERSION for CPAN
+
+2006-08-24 16:09  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: 3.04
+
+2006-08-24 16:08  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/MediaCFG.pm:
+	  - more know variables
+	  - improve doc
+	  - minor fixes
+
+2006-08-24 16:07  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Checks.pm: -
+	  use functions from Utils
+	  - add version
+	  - improve doc
+
+2006-08-24 16:05  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Utils.pm: add
+	  SEE ALSO
+
+2006-08-24 16:03  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/MANIFEST,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Utils.pm: add
+	  Utils.pm for common functions
+
+2006-08-23 08:58  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/MediaCFG.pm:
+	  - fix typo
+
+2006-08-23 08:25  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: - add
+	  empty line to fix pod doc
+
 2006-08-23 04:16  nanardon
 
 	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Checks.pm: -

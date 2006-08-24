@@ -1,17 +1,18 @@
 #!/usr/bin/perl
 
-# $Id: 01distribconf.t 57074 2006-08-22 00:40:35Z nanardon $
+# $Id: 01distribconf.t 58013 2006-08-24 22:50:09Z nanardon $
 
 use strict;
 use Test::More;
 
-my @testdpath = qw(
-    testdata/test
-    testdata/test2
-    testdata/test3
+my %testdpath = (
+    'testdata/test' => undef,
+    'testdata/test2' => undef,
+    'testdata/test3' => undef,
+    'http://server/path/' => 'testdata/test/media/media_info/media.cfg',
 );
 
-plan tests => 14 + 17 * scalar(@testdpath);
+plan tests => 14 + 21 * scalar(keys %testdpath);
 
 use_ok('MDV::Distribconf');
 
@@ -20,9 +21,22 @@ ok(my $dconf = MDV::Distribconf->new('/dev/null'), "Can get new MDV::Distribconf
 ok(!$dconf->load(), "loading wrong distrib give error");
 }
 
-foreach my $path (@testdpath) {
+foreach my $path (keys %testdpath) {
     ok(my $dconf = MDV::Distribconf->new($path), "Can get new MDV::Distribconf");
-    ok($dconf->load(), "Can load conf");
+    if ($testdpath{$path}) {
+        $dconf->settree('mandriva');
+    } else {
+        ok($dconf->load(), "Can load conf");
+    }
+
+    is($dconf->getpath(undef, 'root'), $path, "Can get root path");
+    like($dconf->getpath(undef, 'media_info'), qr!^/*media/media_info/?$!, "Can get media_info path"); # vim color: */ 
+    like($dconf->getpath(undef, 'infodir'), qr!^/*media/media_info/?$!, "Can get infodir"); # vim color: */ 
+    like($dconf->getpath(undef, 'mediadir'), qr!^/*media/?$!, "Can get infodir"); # vim color: */ 
+
+    if ($testdpath{$path}) {
+        ok($dconf->parse_mediacfg($testdpath{$path}), "can parse media.cfg");
+    }
 
     ok(scalar($dconf->listmedia) == 8, "Can list all media");
     ok((grep { $_ eq 'main' } $dconf->listmedia), "list properly media");
