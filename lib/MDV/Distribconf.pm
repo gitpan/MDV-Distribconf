@@ -1,8 +1,8 @@
 package MDV::Distribconf;
 
-# $Id: Distribconf.pm 57483 2006-08-22 13:11:54Z nanardon $
+# $Id: Distribconf.pm 57912 2006-08-24 16:09:04Z nanardon $
 
-our $VERSION = '3.03';
+our $VERSION = '3.04';
 
 =head1 NAME
 
@@ -434,15 +434,19 @@ sub getvalue {
         /^synthesis$/		and $default = 'synthesis.' . lc($distrib->getvalue($media, 'hdlist', $level));
         /^hdlist$/		and $default = 'hdlist_' . lc($distrib->getvalue($media, 'name', $level)) . '.cz';
         /^pubkey$/		and $default = 'pubkey_' . lc($distrib->getvalue($media, 'name', $level));
-        /^name$/		and $default = $media;
-        $default =~ s![/ ]+!_!g;
+        /^name$/		and do { 
+            $default = $media;
+            $default =~ s![/ ]+!_!g;
+            last;
+        };
         /^path$/		and return $media;
         /^root$/		and return $distrib->{root};
         /^mediacfg_version$/	and 
             return $distrib->{cfg}->val('media_info', 'mediacfg_version') || 1;
         /^VERSION$/		and do { $default = 'VERSION'; last };
         /^product$/		and do { $default = 'Download'; last };
-        /^MD5SUM$/      and do { $default = 'MD5SUM'; last };
+        /^(MD5SUM|depslist.ordered|compss|provides)$/      
+                        and do { $default = $_; last };
         /^(?:tag|branch)$/	and do { $default = ''; last };
         /^(?:media|info)dir$/	and do { $default = $distrib->{$var}; last };
     }
@@ -465,7 +469,7 @@ sub getpath {
     $var =~ /^(?:root|VERSION)$/ and return $val;
     my $thispath = $var eq 'path' ? $distrib->{mediadir} : $distrib->{infodir};
     if ($distrib->getvalue(undef, 'mediacfg_version') >= 2) {
-        return $thispath . ($media ? '/' . $val : '');
+        return $thispath . '/' . $val;
     } else {
         return ($val =~ m!/! ? "" :
             ($var eq 'path' ? $distrib->{mediadir} : $distrib->{infodir} )
@@ -508,6 +512,7 @@ sub getfullpath {
     my $path = $distrib->getpath(@_) or return;
     return $distrib->getpath(undef, 'root') . '/' . $path;
 }
+
 =head2 $distrib->getfullmediapath($media, $var)
 
 This function does the same than getpath except it return the path proper
@@ -538,6 +543,8 @@ L<MDV::Distribconf::Checks>
 The code has been written by Olivier Thauvin <nanardon@mandriva.org> and is
 currently maintained by Rafael Garcia-Suarez <rgarciasuarez@mandriva.com>.
 Thanks to Sylvie Terjan <erinmargault@mandriva.org> for the spell checking.
+
+=head1 LICENSE AND COPYRIGHT
 
 (c) 2005 Olivier Thauvin ; (c) 2005, 2006 Mandriva
 

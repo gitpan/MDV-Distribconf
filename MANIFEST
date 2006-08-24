@@ -3,6 +3,7 @@ lib/MDV/Distribconf/Build.pm
 lib/MDV/Distribconf.pm
 lib/MDV/Distribconf/MediaCFG.pm
 lib/MDV/Distribconf/Checks.pm
+lib/MDV/Distribconf/Utils.pm
 bin/checkdistrib
 Makefile.PL
 MANIFEST

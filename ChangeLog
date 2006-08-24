@@ -1,3 +1,12 @@
+2006-08-23 04:16  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Checks.pm: -
+	  fix dir existance
+
+2006-08-22 13:11  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: - more doc
+
 2006-08-22 10:43  nanardon
 
 	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Checks.pm,

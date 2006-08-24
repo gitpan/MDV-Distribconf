@@ -16,9 +16,11 @@
 ##- along with this program; if not, write to the Free Software
 ##- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
-# $Id: Checks.pm 57465 2006-08-22 10:43:54Z nanardon $
+# $Id: Checks.pm 57910 2006-08-24 16:07:04Z nanardon $
 
 package MDV::Distribconf::Checks;
+
+our $VERSION = (qq$Revision: 57910 $ =~ /(\d+)/)[0];
 
 =head1 NAME
 
@@ -33,11 +35,11 @@ distribution tree
 
 use strict;
 use warnings;
-# use Module::Pluggable;
 use MDV::Distribconf::MediaCFG;
 use MDV::Distribconf::Build;
 use MDV::Packdrakeng;
 use Digest::MD5;
+use MDV::Distribconf::Utils;
 
 sub new {
     bless({}, $_[0]);
@@ -250,29 +252,20 @@ Return 1 if no problem were found
 
 =cut
 
+
 sub check_index_sync {
     my ($self, $media, $submedia) = @_;
     my $rpmspath = $self->getfullpath($media, 'path');
-    my $hdlist = ($submedia && -f $self->getfullpath($media, 'path') . '/media_info') ?
+    my $hdlist = ($submedia && -d $self->getfullpath($media, 'path') . '/media_info') ?
         $self->getfullmediapath($media, 'hdlist') :
         $self->getfullpath($media, 'hdlist');
-    my $synthesis = ($submedia && -f $self->getfullpath($media, 'path') . '/media_info') ?
+    my $synthesis = ($submedia && -d $self->getfullpath($media, 'path') . '/media_info') ?
         $self->getfullmediapath($media, 'synthesis') :
         $self->getfullpath($media, 'synthesis');
 
-    my @rpms = sort map { m:.*/+(.*): ; $1 } glob("$rpmspath/*.rpm");
     -f $hdlist && -f $synthesis or return 0; # avoid warnings
-    if (my $pack = MDV::Packdrakeng->open(archive => $hdlist)) {
-        my (undef, $files, undef) = $pack->getcontent();
-        my @hdrs = sort @{$files || []};
-        while (@rpms || @hdrs) {
-            my $r = shift(@rpms) || "";
-            my $h = shift(@hdrs) || "";
-            if ($r ne "$h.rpm") {
-                return 0;
-            }
-        }
-    } else {
+    my ($inp, $ind) = MDV::Distribconf::Utils::hdlist_vs_dir($hdlist, $rpmspath);
+    if (@{$inp || []} + @{$ind || []}) {
         return 0;
     }
     return 1;
@@ -291,29 +284,32 @@ Return 1 if no error were found.
 
 sub check_media_md5 {
     my ($self, $media) = @_;
-    my $md5file = $self->getfullpath($media, 'path') . "/media_info/MD5SUM";
-    my %md5;
-    open(my $hmd5, "< $md5file") or return 0;
-    while (<$hmd5>) {
-        chomp;
-        s/#.*//;
-        /^(.{32})  (.*)/ or next;
-        $md5{$2} = $1;
+    my ($unsync) = MDV::Distribconf::Utils::checkmd5(
+        $self->getfullmediapath($media, 'MD5SUM'),
+        map { $self->getfullmediapath($media, $_) } (qw(hdlist synthesis))
+    );
+    if (@{$unsync || []}) {
+        return 0;
+    } else {
+        return 1;
     }
-    close($hmd5);
-    foreach my $file (qw(hdlist.cz synthesis.hdlist.cz)) {
-        my $filelocation = $self->getfullpath($media, 'path') . "/media_info/$file";
-        open(my $hfile, "< $filelocation") or return 0;
-        my $ctx = Digest::MD5->new;
-        $ctx->addfile($hfile);
-        close($hfile);
-        
-        my ($basename) = $filelocation =~ m:.*/+([^/]*)$:; #: vi syntax coloring
-        if (($md5{$basename} || "") ne $ctx->hexdigest) {
-            return 0;
-        }
+}
+
+sub check_global_md5 {
+    my ($self) = @_;
+    my @indexes;
+    foreach my $media ($self->listmedia()) {
+        push(@indexes, map { $self->getfullpath($media, $_) } (qw(hdlist synthesis)));
     }
-    return 1;
+    my ($unsync) = MDV::Distribconf::Utils::checkmd5(
+        $self->getfullpath(undef, 'MD5SUM'),
+        @indexes,
+    );
+    if (@{$unsync || []}) {
+        return 0;
+    } else {
+        return 1;
+    }
 }
 
 =item $distrib->checkdistrib($fhout)
@@ -351,6 +347,14 @@ sub checkdistrib {
             );
         }
     }
+
+    if ($self->check_global_md5()) {
+        $error += _report_err(
+            $fhout,
+            'UNSYNC_MD5',
+            'Global md5sum file is not ok',
+        );
+    }
     
     $error
 }
@@ -375,12 +379,31 @@ __END__
 
 =back
 
+=head1 SEE ALSO
+
+L<MDV::Distribconf>
+L<MDV::Distribconf::Build>
+
 =head1 AUTHOR
 
 Olivier Thauvin <nanardon@mandriva.org>
 
-=head1 SEE ALSO
+=head1 LICENSE AND COPYRIGHT
 
-L<MDV::Distribconf>
+(c) 2005 Olivier Thauvin ; (c) 2005, 2006 Mandriva
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2, or (at your option)
+any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 =cut

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use MDV::Distribconf;
 
-our $VERSION = (qq$Revision: 57465 $ =~ /(\d+)/)[0];
+our $VERSION = (qq$Revision: 57911 $ =~ /(\d+)/)[0];
 
 =head1 NAME
 
@@ -101,6 +101,30 @@ The branch of the distribution.
 
 =cut
 
+$value->{product} = { section => 'media_info' };
+
+=head3 product
+
+The name of the product, 'Download' by default
+
+=cut
+
+$value->{minor} = { section => 'media_info' };
+
+=head3 minor
+
+No documentation
+
+=cut
+
+$value->{subversion} = { section => 'media_info' };
+
+=head3 subversion
+
+No documentation
+
+=cut
+
 =head2 MEDIA VALUES
 
 =cut
@@ -147,7 +171,7 @@ the list of media holding binaries rpms build by srpms from this media.
 
 $value->{updates_for} = { ismedialist => 1 };
 
-=head3 debug_for
+=head3 updates_for
 
 If the media contain updates, it contain the list of media for which
 rpms are updates.
@@ -194,6 +218,23 @@ The size of the media. The value is suffixed by the unit.
 
 =cut
 
+$value->{suppl} = {  };
+
+=head3 suppl
+
+The media is a supplementary media.
+
+=cut
+
+$value->{askmedia} = {  };
+
+=head3 askmedia
+
+Tools should ask to the user if the media should be add or not to
+the configuration
+
+=cut
+
 # valid_param($media, $var, $val)
 #
 # Return a list of errors (if any) about having such value in the config
@@ -228,3 +269,26 @@ sub _value_info {
 
 __END__
 
+=head1 AUTHOR
+
+Olivier Thauvin <nanardon@mandriva.org>
+
+=head1 LICENSE AND COPYRIGHT
+
+(c) 2005 Olivier Thauvin ; (c) 2005, 2006 Mandriva
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2, or (at your option)
+any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+=cut
