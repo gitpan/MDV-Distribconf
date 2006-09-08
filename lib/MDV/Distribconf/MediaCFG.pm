@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use MDV::Distribconf;
 
-our $VERSION = (qq$Revision: 57911 $ =~ /(\d+)/)[0];
+our $VERSION = (qq$Revision: 58312 $ =~ /(\d+)/)[0];
 
 =head1 NAME
 
@@ -12,7 +12,7 @@ MDV::Distribconf::MediaCFG
 
 =head1 DESCRIPTION
 
-This module provide documenation of know value in media.cfg
+This module provides documenation of known values in F<media.cfg>.
 
 =head1 MEDIACFG VERSION
 
@@ -22,28 +22,28 @@ behavior of this module.
 
 =head2 1
 
-This is the default and the first version of mediacfg format.
+This is the default and the first version of media.cfg format.
 
 =head2 2
 
-Since this version, all media path are relative to the media_info path.
-Before, media was relative to media_info except media with / relative to
-the root of the distrib.
+Since this version, all media paths are relative to the media_info path.
+Previously, media paths were relative to media_info except when beginning with
+F</>, which were relative to the root of the distrib.
 
 =head2 3
 
-This version allow to include in value variable in form of refering to
-other value set in the file:
+This version allows to include in values variables that refer to
+other values defined in the configuration file:
 
 =over 4
 
 =item ${...}
 
-refer to a global value (distribution version, arch...)
+refers to a global value (distribution version, arch...)
 
 =item %{...}
 
-refer to a value proper to the media (name, ...)
+refers to a value specific to the media (name, ...)
 
 =back
 

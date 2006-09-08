@@ -1,8 +1,8 @@
 package MDV::Distribconf;
 
-# $Id: Distribconf.pm 58013 2006-08-24 22:50:09Z nanardon $
+# $Id: Distribconf.pm 60640 2006-09-08 15:15:24Z nanardon $
 
-our $VERSION = '3.05';
+our $VERSION = '3.06';
 
 =head1 NAME
 
@@ -176,6 +176,7 @@ sub new {
 	root => $path,
 	infodir => '',
 	mediadir => '',
+    mediainfodir => '',
 	cfg => new Config::IniFiles(-default => 'media_info', -allowcontinue => 1),
     };
 
@@ -267,7 +268,7 @@ sub settree {
     my ($distrib, $spec) = @_;
 
     if (ref($spec) eq 'HASH') {
-        foreach (qw(infodir mediadir)) {
+        foreach (qw(infodir mediadir mediainfodir)) {
             $distrib->{$_} = $spec->{$_} || '';
         }
     } elsif ($spec && $spec =~ /mandrake/i) {
@@ -439,11 +440,16 @@ sub getvalue {
             $default =~ s![/ ]+!_!g;
             last;
         };
+        /^productid$/   and do {
+            return join(',', map { "$_=" . $distrib->getvalue(undef, $_, '') }
+                qw(vendor distribution type version branch release arch product));
+        };
         /^path$/		and return $media;
         /^root$/		and return $distrib->{root};
         /^mediacfg_version$/	and 
             return $distrib->{cfg}->val('media_info', 'mediacfg_version') || 1;
         /^VERSION$/		and do { $default = 'VERSION'; last };
+        /^product.id$/	and do { $default = 'product.id'; last };
         /^product$/		and do { $default = 'Download'; last };
         /^(MD5SUM|depslist.ordered|compss|provides)$/      
                         and do { $default = $_; last };
@@ -466,7 +472,7 @@ sub getpath {
     $distrib->mediaexists($media) or return;
     $var ||= ""; # Avoid undef value
     my $val = $distrib->getvalue($media, $var);
-    $var =~ /^(?:root|VERSION|(?:media|info)dir)$/ and return $val;
+    $var =~ /^(?:root|VERSION|product\.id|(?:media|info)dir)$/ and return $val;
     my $thispath = $var eq 'path' ? $distrib->{mediadir} : $distrib->{infodir};
     if ($distrib->getvalue(undef, 'mediacfg_version') >= 2) {
         return $thispath . '/' . $val;
@@ -510,6 +516,7 @@ prefixed by the 'root' path. This is a shortcut for:
 sub getfullpath {
     my $distrib = shift;
     my $path = $distrib->getpath(@_) or return;
+    return $distrib->getpath(undef, 'root') if (($_[1] || '') eq 'root');
     return $distrib->getpath(undef, 'root') . '/' . $path;
 }
 

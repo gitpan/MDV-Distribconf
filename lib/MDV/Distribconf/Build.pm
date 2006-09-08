@@ -13,9 +13,10 @@ MDV::Distribconf::Build - Subclass to MDV::Distribconf to build configuration
 use strict;
 use warnings;
 use MDV::Distribconf;
+use File::Path;
 
 use base qw(MDV::Distribconf MDV::Distribconf::Checks);
-our $VERSION = (qq$Revision: 57920 $ =~ /(\d+)/)[0];
+our $VERSION = (qq$Revision: 60640 $ =~ /(\d+)/)[0];
 
 =item MDV::Distribconf::Build->new($root_of_distrib)
 
@@ -29,6 +30,73 @@ sub new {
     bless $self, $class;
 }
 
+=item $distrib->init($flavour)
+
+Create initals directories in the distrib tree if missing.
+
+$flavour is either 'mandriva' or 'mandrake', depending the tree type
+you want to create.
+
+See also L<MDV::Distribconf/settree>
+
+Return 1 on success, 0 otherwise.
+
+=cut
+
+sub init {
+    my ($self, $flavour) = @_;
+    $self->settree($flavour || 'mandriva') unless($self->{infodir});
+    if (!-d $self->getfullpath(undef, 'root')) {
+        if (!mkdir($self->getfullpath(undef, 'root'))) {
+            warn 'Cannot create ' . $self->getfullpath(undef, 'root') .": $!\n";
+            return 0;
+        }
+    }
+    foreach my $dir (map { $self->getfullpath(undef, $_) } qw(mediadir infodir)) {
+        if (!-d $dir) {
+            eval { mkpath($dir) };
+            if ($@) {
+                warn "Cannot create $dir: $@\n";
+                return 0;
+            }
+        }
+    }
+
+    foreach my $media ($self->listmedia()) {
+        $self->create_media($media) or return 0;
+    }
+
+    1;
+}
+
+=item $distrib->create_media($media)
+
+Create a media $media if not exists and its directories if need.
+
+See also L<setvalue>
+
+Return 1 on success, 0 otherwise
+
+=cut
+
+sub create_media {
+    my ($self, $media) = @_;
+    $self->setvalue($media, undef, undef);
+    foreach my $dir (map { $self->getfullmediapath($media, $_) } qw(path infodir)) {
+        if (!-d $dir) {
+            eval { mkpath($dir) };
+            if ($@) {
+                warn "Cannot create $dir: $@\n";
+                $self->delvalue($media, undef);
+                return 0;
+            }
+        }
+    }
+
+
+    1;
+}
+
 =item $distrib->setvalue($media, $var, $val)
 
 Sets or adds $var parameter from $media to $val. If $media doesn't exist,
@@ -40,16 +108,71 @@ no defined parameters.
 sub setvalue {
     my ($distrib, $media, $var, $val) = @_;
     $media ||= 'media_info';
+    $distrib->{cfg}->AddSection($media);
     if ($var) {
+        if ($media && !$distrib->mediaexists($media)) {
+            $distrib->setvalue($media);
+        }
         $var =~ /^(?:media|info)dir\z/ and do {
             $distrib->{$var} = $val;
-            return;
+            return 1;
         };
-        $distrib->{cfg}->newval($media, $var, $val)
-	    or warn "Can't set value [$var=$val] for $media\n";
-    } else {
-        $distrib->{cfg}->AddSection($media);
+        if ($val) {
+            $distrib->{cfg}->newval($media, $var, $val)
+	        or warn "Can't set value [$var=$val] for $media\n";
+        } else {
+            $distrib->{cfg}->delval($media, $var);
+        }
     }
+    $distrib->_post_setvalue($media, $var, $val) if ($media);
+}
+
+sub _post_setvalue {
+    my ($distrib, $cmedia, $cvar, $cval) = @_;
+    if ($cvar) {
+        my $vsettings = MDV::Distribconf::MediaCFG::_value_info($cvar);
+        if ($vsettings->{cross}) {
+            my %pointed_media = map { $_ => 1 } split(/\s/, $cval);
+            foreach my $media ($distrib->listmedia()) {
+                my %ml = map { $_ => 1 }
+                    split(/\s/, $distrib->getvalue($media, $vsettings->{cross}));
+
+                if (exists($pointed_media{$media})) {
+                    exists($ml{$cmedia}) and next;
+                    $ml{$cmedia} = 1;
+                } else {
+                    exists($ml{$cmedia}) or next;
+                    delete($ml{$cmedia});
+                }
+                $distrib->setvalue(
+                    $media,
+                    $vsettings->{cross},
+                    join(" ", keys %ml),
+                );
+            }
+        }
+    } else {
+        foreach my $media ($distrib->listmedia()) {
+            foreach my $val ($distrib->{cfg}->Parameters($media)) {
+            my $vsettings = MDV::Distribconf::MediaCFG::_value_info($val);
+                if ($vsettings->{cross}) {
+                    if (grep { $_ eq $cmedia } 
+                        split(/\s/, $distrib->getvalue($media, $val))) {
+                        my %ml = map { $_ => 1 }
+                            split(/\s/, $distrib->getvalue($cmedia, $vsettings->{cross}));
+                        exists($ml{$media}) and next;
+                        $ml{$media} = 1;
+                        $distrib->setvalue(
+                            $cmedia,
+                            $vsettings->{cross},
+                            join(" ", keys %ml),
+                        );
+                    }
+                }
+            }
+        }
+    }
+    1;
 }
 
 =item $distrib->delvalue($media, $var)
@@ -66,6 +189,44 @@ sub delvalue {
     } else {
         $distrib->{cfg}->DeleteSection($media);
     }
+    $distrib->_post_delvalue($media, $var);
+}
+
+sub _post_delvalue {
+    my ($distrib, $cmedia, $cvar) = @_;
+    foreach my $media ($distrib->listmedia()) {
+        if ($cvar) {
+            my $vsettings = MDV::Distribconf::MediaCFG::_value_info($cvar);
+            if ($vsettings->{cross}) {
+                if($distrib->getvalue($media, $vsettings->{cross})) {
+                    my %ml = map { $_ => 1 } split(/\s/, $distrib->getvalue($media, $vsettings->{cross}));
+                    exists($ml{$cmedia}) or next;
+                    delete($ml{$cmedia});
+
+                    $distrib->setvalue(
+                        $media,
+                        $vsettings->{cross},
+                        join(" ", keys %ml)
+                    );
+                }
+            }
+        } else {
+            foreach my $val ($distrib->{cfg}->Parameters($media)) {
+                my $vsettings = MDV::Distribconf::MediaCFG::_value_info($val);
+                if ($vsettings->{ismedialist} && $distrib->getvalue($media, $val)) {
+                    my %ml = map { $_ => 1 } split(/\s/, $distrib->getvalue($media, $val));
+                    exists($ml{$cmedia}) or next;
+                    delete($ml{$cmedia});
+                    $distrib->setvalue(
+                        $media,
+                        $val,
+                        join(" ", keys %ml)
+                    );
+                }
+            }
+        }
+    }
+    1;
 }
 
 =item $distrib->write_hdlists($hdlists)
@@ -147,6 +308,30 @@ sub write_version {
     return 1;
 }
 
+=item $distrib->write_productid($productid)
+
+Write the productid file. Returns 0 on error, 1 on success.
+
+=cut
+
+sub write_productid {
+    my ($distrib, $productid) = @_;
+    my $h_productid;
+    if (ref($productid) eq 'GLOB') {
+        $h_productid = $productid;
+    } else {
+        $productid ||= $distrib->getfullpath(undef, 'product.id');
+        open($h_productid, ">", $productid) or return 0;
+    }
+
+    print $h_productid $distrib->getvalue(undef, 'productid') . "\n";
+
+    if (ref($productid) ne 'GLOB') {
+        close($h_productid);
+    }
+
+    return 1;
+}
 
 1;
 

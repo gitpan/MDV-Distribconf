@@ -1,31 +1,12 @@
-##- Nanar <nanardon@mandriva.org>
-##- (c) 2005 Olivier Thauvin
-##- (c) 2005 Mandriva Linux
-##-
-##- This program is free software; you can redistribute it and/or modify
-##- it under the terms of the GNU General Public License as published by
-##- the Free Software Foundation; either version 2, or (at your option)
-##- any later version.
-##-
-##- This program is distributed in the hope that it will be useful,
-##- but WITHOUT ANY WARRANTY; without even the implied warranty of
-##- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##- GNU General Public License for more details.
-##-
-##- You should have received a copy of the GNU General Public License
-##- along with this program; if not, write to the Free Software
-##- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-#
-# $Id: Checks.pm 57910 2006-08-24 16:07:04Z nanardon $
+# $Id: Checks.pm 59285 2006-09-01 00:10:10Z nanardon $
 
 package MDV::Distribconf::Checks;
 
-our $VERSION = (qq$Revision: 57910 $ =~ /(\d+)/)[0];
+our $VERSION = (qq$Revision: 59285 $ =~ /(\d+)/)[0];
 
 =head1 NAME
 
-MDV::Distribconf::Checks - A Subclass to MDV::Distribconf::Build to check
-distribution tree
+MDV::Distribconf::Checks - A Subclass to MDV::Distribconf::Build to check distribution trees
 
 =head1 METHODS
 
@@ -36,13 +17,15 @@ distribution tree
 use strict;
 use warnings;
 use MDV::Distribconf::MediaCFG;
-use MDV::Distribconf::Build;
 use MDV::Packdrakeng;
 use Digest::MD5;
 use MDV::Distribconf::Utils;
+use base qw(MDV::Distribconf);
 
 sub new {
-    bless({}, $_[0]);
+    my $class = shift;
+    my $self = $class->SUPER::new(@_);
+    bless $self, $class;
 }
 
 sub _report_err {

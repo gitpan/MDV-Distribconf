@@ -1,3 +1,48 @@
+2006-09-03 04:46  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Build.pm,
+	  soft/rpm/MDV-Distribconf/trunk/t/05build.t: - changing a value
+	  friendly set the peer one
+
+2006-09-03 04:44  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: - fix
+	  getfullpath root
+
+2006-09-01 01:56  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Build.pm: -
+	  add init() and create_media()
+
+2006-09-01 01:32  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: - take
+	  mediainfodir into account
+
+2006-09-01 00:10  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Checks.pm: -
+	  cleanup
+	  checks does not need Build
+
+2006-08-28 12:33  rafael
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Checks.pm,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/MediaCFG.pm,
+	  soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf/Utils.pm:
+	  English spelling fixes
+
+2006-08-24 22:50  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm,
+	  soft/rpm/MDV-Distribconf/trunk/t/01distribconf.t: - fix
+	  getpath(undef, 'infodir')
+
+2006-08-24 21:10  nanardon
+
+	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: -
+	  perl_checker fix
+
 2006-08-24 18:39  tv
 
 	* soft/rpm/MDV-Distribconf/trunk/lib/MDV/Distribconf.pm: minimal

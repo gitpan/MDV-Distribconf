@@ -5,7 +5,7 @@ use warnings;
 use MDV::Packdrakeng;
 use Digest::MD5;
 
-our ($VERSION) = (qq$Revision: 57909 $ =~ /(\d+)/)[0];
+our ($VERSION) = (qq$Revision: 58312 $ =~ /(\d+)/)[0];
 
 =head1 NAME
 
@@ -13,13 +13,13 @@ MDV::Distribconf::Utils
 
 =head1 DESCRIPTION
 
-Contains basic functions use by Distribconf
+Contains basic functions used by Distribconf
 
 =head1 FUNCTIONS
 
 =head2 hdlist_vs_dir($hdlistfile, @dirs)
 
-Return two array ref about rpm include only in hdlist or in directories
+Return two arrayrefs about rpms included only in hdlist or in directories
 
 =cut
 
