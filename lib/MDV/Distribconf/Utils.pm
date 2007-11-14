@@ -5,7 +5,7 @@ use warnings;
 use MDV::Packdrakeng;
 use Digest::MD5;
 
-our ($VERSION) = (qq$Revision: 58312 $ =~ /(\d+)/)[0];
+our ($VERSION) = (qq$Revision: 231507 $ =~ /(\d+)/)[0];
 
 =head1 NAME
 
@@ -28,18 +28,23 @@ sub hdlist_vs_dir {
     my (@only_pack, @only_dir);
     my @rpms;
     foreach my $dir (@dir) {
-        push(@rpms, map { m:.*/+(.*): ; $1 } glob("$dir/*.rpm"));
+        push(@rpms, glob("$dir/*.rpm"));
     }
-    @rpms = sort { $b cmp $a } @rpms;
-    if (my $pack = MDV::Packdrakeng->open(archive => $hdlist)) {
+    @rpms = sort { ($b =~ m:.*/+(.*):)[0] cmp ($a =~ m:.*/+(.*):)[0] } @rpms;
+    if (-f $hdlist and my $pack = MDV::Packdrakeng->open(archive => $hdlist)) {
+        my $hdlisttime = (stat($hdlist))[9];
         my (undef, $files, undef) = $pack->getcontent();
         my @hdrs = sort { $b cmp $a } map { "$_.rpm" } @{$files || []};
         my ($r, $h) = ("", "");
         do {
-            my $comp = $r cmp $h;
+            my $comp = (($r =~ m:.*/+(.*):)[0] || '') cmp $h;
             # print "< $r - $h > $comp\n";
             if ($comp < 0) { push(@only_pack, $h); }
-            elsif ($comp > 0) { push(@only_dir, $r); }
+            elsif ($comp > 0) { push(@only_dir, ($r =~ m:.*/+(.*):)[0]); }
+            elsif ($r && (stat($r))[9] > $hdlisttime) {
+                push(@only_pack, $h);
+                push(@only_dir, ($r =~ m:.*/+(.*):)[0]);
+            }
 
             if ($comp <= 0) {
                 $h = shift(@hdrs) || "";
@@ -49,7 +54,7 @@ sub hdlist_vs_dir {
             }
         } while (scalar(@rpms) || scalar(@hdrs));
     } else {
-        return;
+        return(undef, [ map { m:.*/+(.*):; $1 } @rpms ]);
     }
     return (\@only_pack, \@only_dir);
 }
@@ -75,7 +80,7 @@ sub checkmd5 {
             $foundmd5{$basename} = '';
         }
     }
-    open(my $hmd5, "< $md5file") or return([ keys %foundmd5 ], \%foundmd5);
+    open(my $hmd5, "<", $md5file) or return([ keys %foundmd5 ], \%foundmd5);
     my %md5;
     while (<$hmd5>) {
         chomp;
@@ -102,7 +107,8 @@ Olivier Thauvin <nanardon@mandriva.org>
 
 =head1 LICENSE AND COPYRIGHT
 
-(c) 2005 Olivier Thauvin ; (c) 2005, 2006 Mandriva
+(c) 2005, 2006, 2007 Olivier Thauvin
+(c) 2005, 2006, 2007 Mandriva
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

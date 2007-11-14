@@ -202,7 +202,14 @@ sub check_media_coherency {
 	    $distrib->getpath($media, 'path'),
 	    $media
 	);
-	foreach (qw/hdlist synthesis/) {
+	foreach (qw/hdlist synthesis MD5SUM/) {
+	    -f $distrib->getfullmediapath($media, $_) or $error += _report_err(
+        $fhout,
+		'MISSING_INDEX', "$_ %s doesn't exist for media `%s'",
+		$distrib->getmediapath($media, $_),
+		$media
+	    );
+        /^MD5SUM$/ and next;
 	    -f $distrib->getfullpath($media, $_) or $error += _report_err(
         $fhout,
 		'MISSING_INDEX', "$_ %s doesn't exist for media `%s'",
@@ -235,8 +242,11 @@ Return 1 if no problem were found
 
 =cut
 
-
 sub check_index_sync {
+    return (get_index_sync_offset(@_))[0]
+}
+
+sub get_index_sync_offset {
     my ($self, $media, $submedia) = @_;
     my $rpmspath = $self->getfullpath($media, 'path');
     my $hdlist = ($submedia && -d $self->getfullpath($media, 'path') . '/media_info') ?
@@ -248,10 +258,10 @@ sub check_index_sync {
 
     -f $hdlist && -f $synthesis or return 0; # avoid warnings
     my ($inp, $ind) = MDV::Distribconf::Utils::hdlist_vs_dir($hdlist, $rpmspath);
-    if (@{$inp || []} + @{$ind || []}) {
-        return 0;
+    if (!defined($inp) || (@{$inp || []} + @{$ind || []})) {
+        return (0, (defined($inp) ? scalar(@{$inp || []}) : undef), scalar(@{$ind || []}));
     }
-    return 1;
+    return (1, 0, 0);
 }
 
 =item $distrib->check_media_md5($media)
@@ -312,12 +322,14 @@ sub checkdistrib {
     $error += $self->check_media_coherency($fhout);
 
     foreach my $media ($self->listmedia) {
-        if(!$self->check_index_sync($media)) {
+        my ($e, $inhd, $indir) = $self->get_index_sync_offset($media);
+        if (!$e) {
             $error += _report_err(
                 $fhout,
                 'UNSYNC_HDLIST',
-                "hdlist for media `%s' is not sync with its rpms",
-                $media,
+                "hdlist for media `%s' is not sync with its rpms" . 
+                    (defined($inhd) ? " (+%d -%d rpms)" : ' (missing or unreadable hdlist: +%d rpms)'),
+                $media, ($indir || 0), $inhd
             );
         }
 
@@ -331,7 +343,7 @@ sub checkdistrib {
         }
     }
 
-    if ($self->check_global_md5()) {
+    if (!$self->check_global_md5()) {
         $error += _report_err(
             $fhout,
             'UNSYNC_MD5',
@@ -373,7 +385,8 @@ Olivier Thauvin <nanardon@mandriva.org>
 
 =head1 LICENSE AND COPYRIGHT
 
-(c) 2005 Olivier Thauvin ; (c) 2005, 2006 Mandriva
+(c) 2005, 2006, 2007 Olivier Thauvin
+(c) 2005, 2006, 2007 Mandriva
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

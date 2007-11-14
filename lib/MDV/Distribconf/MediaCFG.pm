@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use MDV::Distribconf;
 
-our $VERSION = (qq$Revision: 58312 $ =~ /(\d+)/)[0];
+our $VERSION = (qq$Revision: 224942 $ =~ /(\d+)/)[0];
 
 =head1 NAME
 
@@ -90,6 +90,24 @@ $value->{arch} = { section => 'media_info' };
 =head3 arch
 
 The arcitecture of the distribution
+
+=cut
+
+$value->{suppl} = { section => 'media_info' };
+
+=head3 suppl
+
+This tag is used to change installer behavior, when set, user should be allow
+to add media not provided by this distribution.
+
+=cut
+
+$value->{askmedia} = { section => 'media_info' };
+
+=head3 askmedia
+
+This tag is used to change installer behavior, when set, user should be prompt
+before adding each media.
 
 =cut
 
@@ -218,23 +236,6 @@ The size of the media. The value is suffixed by the unit.
 
 =cut
 
-$value->{suppl} = {  };
-
-=head3 suppl
-
-The media is a supplementary media.
-
-=cut
-
-$value->{askmedia} = {  };
-
-=head3 askmedia
-
-Tools should ask to the user if the media should be add or not to
-the configuration
-
-=cut
-
 # valid_param($media, $var, $val)
 #
 # Return a list of errors (if any) about having such value in the config
@@ -275,7 +276,8 @@ Olivier Thauvin <nanardon@mandriva.org>
 
 =head1 LICENSE AND COPYRIGHT
 
-(c) 2005 Olivier Thauvin ; (c) 2005, 2006 Mandriva
+(c) 2005, 2006, 2007 Olivier Thauvin
+(c) 2005, 2006, 2007 Mandriva
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

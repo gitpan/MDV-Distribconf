@@ -12,11 +12,14 @@ MDV::Distribconf::Build - Subclass to MDV::Distribconf to build configuration
 
 use strict;
 use warnings;
-use MDV::Distribconf;
 use File::Path;
+use MDV::Packdrakeng;
+use File::Temp qw(tempfile);
+use File::Copy qw(cp);
+use Digest::MD5;
 
 use base qw(MDV::Distribconf MDV::Distribconf::Checks);
-our $VERSION = (qq$Revision: 60640 $ =~ /(\d+)/)[0];
+our $VERSION = (qq$Revision: 224942 $ =~ /(\d+)/)[0];
 
 =item MDV::Distribconf::Build->new($root_of_distrib)
 
@@ -92,7 +95,6 @@ sub create_media {
             }
         }
     }
-
 
     1;
 }
@@ -333,6 +335,56 @@ sub write_productid {
     return 1;
 }
 
+=item $distrib->list_existing_medias()
+
+List media which really exists on the disk
+
+=cut
+
+sub list_existing_medias {
+    my ($self) = @_;
+    grep { -d $self->getfullmediapath($_, 'path') } $self->listmedia();
+}
+
+=item $distrib->set_medias_size($media)
+
+Set media size into media.cfg for $media
+
+=cut
+
+sub set_media_size {
+    my ($self, $media) = @_;
+    my $size = 0;
+    foreach (glob($self->getfullmediapath($media, 'path') . '/*.rpm')) {
+        $size += (stat($_))[7];
+    }
+    my $blk = 1;
+    my $showsize = $size;
+    my @unit = (' ', qw(k m g));
+    while (@unit) {
+        my $u = shift(@unit);
+        if ($size / $blk < 1) {
+            last;
+        }
+        $showsize = sprintf('%d%s', $size / $blk, $u);
+        $blk *= 1024;
+    }
+    $self->setvalue($media, 'size', $showsize);
+}
+
+=item $distrib->set_all_medias_size()
+
+Set media size into media.cfg
+
+=cut
+
+sub set_all_medias_size {
+    my ($self) = @_;
+    foreach my $media ($self->list_existing_medias()) {
+        $self->set_media_size($media);
+    }
+}
+
 1;
 
 __END__
@@ -342,5 +394,28 @@ __END__
 =head1 SEE ALSO
 
 L<MDV::Distribconf>
+
+=head1 AUTHOR
+
+Olivier Thauvin <nanardon@mandriva.org>
+
+=head1 LICENSE AND COPYRIGHT
+
+(c) 2005, 2006, 2007 Olivier Thauvin
+(c) 2005, 2006, 2007 Mandriva
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2, or (at your option)
+any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 =cut

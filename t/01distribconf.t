@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# $Id: 01distribconf.t 58013 2006-08-24 22:50:09Z nanardon $
+# $Id: 01distribconf.t 231445 2007-11-09 13:46:44Z nanardon $
 
 use strict;
 use Test::More;
@@ -12,7 +12,7 @@ my %testdpath = (
     'http://server/path/' => 'testdata/test/media/media_info/media.cfg',
 );
 
-plan tests => 14 + 21 * scalar(keys %testdpath);
+plan tests => 14 + 29 * scalar(keys %testdpath);
 
 use_ok('MDV::Distribconf');
 
@@ -45,6 +45,7 @@ foreach my $path (keys %testdpath) {
     is($dconf->getvalue('main', 'version'), '2006.0', "Can get global value via media");
     is($dconf->getvalue('main', 'name'), 'main', "Can get default name");
     is($dconf->getvalue('contrib', 'name'), 'Contrib', "Can get media name");
+    is($dconf->getvalue('contrib', 'platform'), 'i586-mandriva-linux-gnu', "Can get media platform");
 
     is($dconf->getpath(undef, 'root'), $path, "Can get root path");
     like($dconf->getpath(undef, 'media_info'), qr!^/*media/media_info/?$!, "Can get media_info path"); # vim color: */ 
@@ -55,6 +56,14 @@ foreach my $path (keys %testdpath) {
     like($dconf->getfullpath('main', 'hdlist'), qr!^/*$path/*media/+media_info/+hdlist_main.cz$!, "Can get media fullpath"); # vim color: */
     like($dconf->getmediapath('main', 'hdlist'), qr!^/*media/+main/+media_info/+hdlist.cz$!, "Can get media path"); # vim color: */
     like($dconf->getfullmediapath('main', 'hdlist'), qr!^/*$path/*media/+main/+media_info/+hdlist.cz$!, "Can get media fullpath"); # vim color: */
+    like($dconf->getdpath('main', 'hdlist'), qr!^/*media/+main/+media_info/+hdlist.cz$!, "can get dpath");
+    like($dconf->getfulldpath('main', 'hdlist'), qr!^/*$path/*media/+main/+media_info/+hdlist.cz$!, "can get fulldpath");
+    like($dconf->getfullpath('../SRPMS/contrib', 'pubkey'),
+        qr!^/*$path/*media/+media_info/+pubkey_[^ ]+$!, "can get pubkey full path");
+    is($dconf->getdpath(undef, 'root'), $path, "can get fulldpath");
+    is($dconf->getfulldpath(undef, 'VERSION'), "$path/VERSION", "can get fulldpath");
+    is($dconf->getdpath('main', 'root'), $path, "can get fulldpath root even media is given");
+    is($dconf->getdpath('main', 'description'), 'media/media_info/description', "can get fulldpath description even media is given");
 }
 
 {

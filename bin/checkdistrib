@@ -23,8 +23,8 @@ foreach my $tree (@distribs) {
         printf(
             "\nChecking distrib in %s (%s for %s)\n",
             $tree,
-            $mdc->getvalue(undef, 'version'),
-            $mdc->getvalue(undef, 'arch'),
+            $mdc->getvalue(undef, 'version') || 'unknown',
+            $mdc->getvalue(undef, 'arch') || 'unknown',
         );
     }
     

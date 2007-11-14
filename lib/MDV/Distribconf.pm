@@ -1,8 +1,8 @@
 package MDV::Distribconf;
 
-# $Id: Distribconf.pm 60640 2006-09-08 15:15:24Z nanardon $
+# $Id: Distribconf.pm 231509 2007-11-14 01:02:55Z nanardon $
 
-our $VERSION = '3.06';
+our $VERSION = '3.13';
 
 =head1 NAME
 
@@ -176,6 +176,7 @@ sub new {
 	root => $path,
 	infodir => '',
 	mediadir => '',
+    type => '', # mdk vs mdv
     mediainfodir => '',
 	cfg => new Config::IniFiles(-default => 'media_info', -allowcontinue => 1),
     };
@@ -220,13 +221,15 @@ sub loadtree {
     my ($distrib) = @_;
 
     if (-d "$distrib->{root}/media/media_info") {
-        $distrib->{infodir} = "media/media_info";
-        $distrib->{mediadir} = "media";
+        $distrib->{infodir} = 'media/media_info';
+        $distrib->{mediadir} = 'media';
         $distrib->{mediainfodir} = '/media_info';
+        $distrib->{type} = 'mandriva';
     } elsif (-d "$distrib->{root}/Mandrake/base") {
-        $distrib->{infodir} = "Mandrake/base";
-        $distrib->{mediadir} = "Mandrake";
+        $distrib->{infodir} = 'Mandrake/base';
+        $distrib->{mediadir} = 'Mandrake';
         $distrib->{mediainfodir} = '';
+        $distrib->{type} = 'mandrake';
     } else {
         return 0;
     }
@@ -272,13 +275,15 @@ sub settree {
             $distrib->{$_} = $spec->{$_} || '';
         }
     } elsif ($spec && $spec =~ /mandrake/i) {
-        $distrib->{infodir} = "Mandrake/base";
-        $distrib->{mediadir} = "Mandrake";
+        $distrib->{infodir} = 'Mandrake/base';
+        $distrib->{mediadir} = 'Mandrake';
+        $distrib->{type} = 'mandrake';
         $distrib->{mediainfodir} = '';
     } else { # finally it can be everything, we do not care
-        $distrib->{infodir} = "media/media_info";
-        $distrib->{mediadir} = "media";
+        $distrib->{infodir} = 'media/media_info';
+        $distrib->{mediadir} = 'media';
         $distrib->{mediainfodir} = '/media_info';
+        $distrib->{type} = 'mandriva';
     }
 }
 
@@ -435,13 +440,16 @@ sub getvalue {
         /^synthesis$/		and $default = 'synthesis.' . lc($distrib->getvalue($media, 'hdlist', $level));
         /^hdlist$/		and $default = 'hdlist_' . lc($distrib->getvalue($media, 'name', $level)) . '.cz';
         /^pubkey$/		and $default = 'pubkey_' . lc($distrib->getvalue($media, 'name', $level));
+        /^(pubkey|hdlist|synthesis)$/ and do {
+            $default =~ s![/ ]+!_!g;
+        };
         /^name$/		and do { 
             $default = $media;
             $default =~ s![/ ]+!_!g;
             last;
         };
         /^productid$/   and do {
-            return join(',', map { "$_=" . $distrib->getvalue(undef, $_, '') }
+            return join(',', map { "$_=" . ($distrib->getvalue(undef, $_) || '') }
                 qw(vendor distribution type version branch release arch product));
         };
         /^path$/		and return $media;
@@ -455,6 +463,24 @@ sub getvalue {
                         and do { $default = $_; last };
         /^(?:tag|branch)$/	and do { $default = ''; last };
         /^(?:media|info)dir$/	and do { $default = $distrib->{$var}; last };
+        /^os$/ and do { $default = 'linux'; last; };
+        /^gnu$/ and do { $default = 1; last; };
+        /^vendor$/ and do { $default = $distrib->{type}; last; };
+        /^arch$/ and do { $default = undef;  last; };
+        /^platform$/ and do {
+            my $arch = $distrib->getvalue($media, 'arch');
+            $default = defined($arch) ? sprintf('%s-%s-%s%s',
+                $arch,
+                $distrib->getvalue($media, 'vendor'),
+                $distrib->getvalue($media, 'os'),
+                $distrib->getvalue($media, 'gnu') ? '-gnu' : '',
+                ) : undef;
+            last;
+        };
+        /^rpmsrate$/ and do { $default = 'rpmsrate'; last; };
+        /^description$/ and do { $default = 'description'; last; };
+        /^provide$/ and do { $default = 'description'; last; };
+        /^depslist.ordered$/ and do { $default = 'description'; last; };
     }
     return $distrib->_expand($media, $distrib->{cfg}->val($media, $var, $default), $level);
 }
@@ -533,6 +559,44 @@ sub getfullmediapath {
     return $distrib->getpath(undef, 'root') . '/' . $path;
 }
 
+=head2 $distrib->getdpath($media, $var)
+
+Does the same thing than getpath(), but the return always return the best for
+file having twice location (index).
+
+You may want to use this function to ensure you allways the good value.
+
+=cut
+
+sub getdpath {
+    my ($distrib, $media, $var) = @_;
+
+    if ($var =~ /^(hdlist|synthesis|pubkey|MD5SUM)$/) {
+        if ($distrib->{type} eq 'mandriva') {
+            return $distrib->getmediapath($media, $var);
+        } else {
+            return $distrib->getpath($media, $var);
+        }
+    } else {
+        return $distrib->getpath($media, $var);
+    }
+}
+
+=head2 $distrib->getfulldpath($media, $var)
+
+Does the same thing than getfullpath(), but the return always return the best
+for file having twice location (index).
+
+You may want to use this function to ensure you allways the good value.
+
+=cut
+
+sub getfulldpath {
+    my $distrib = shift;
+    my $path = $distrib->getdpath(@_) or return;
+    return $distrib->getpath(undef, 'root') . '/' . $path;
+}
+
 
 1;
 
@@ -553,7 +617,8 @@ Thanks to Sylvie Terjan <erinmargault@mandriva.org> for the spell checking.
 
 =head1 LICENSE AND COPYRIGHT
 
-(c) 2005 Olivier Thauvin ; (c) 2005, 2006 Mandriva
+(c) 2005, 2006, 2007 Olivier Thauvin
+(c) 2005, 2006, 2007 Mandriva
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

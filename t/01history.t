@@ -6,9 +6,9 @@ use strict;
 use Test::More;
 use MDV::Distribconf;
 
-my @testdpath = glob('testdata/history/*/*/*');
+my @testdpath = grep { ! /SRPMS/ } glob('testdata/history/*/*/*');
 
-plan tests => 3 * scalar(@testdpath);
+plan tests => 6 * scalar(@testdpath);
 
 foreach my $path (@testdpath) {
     ok(
@@ -17,4 +17,21 @@ foreach my $path (@testdpath) {
     );
     ok($dconf->load(), "can load $path");
     ok($dconf->listmedia(), "can list media");
+    SKIP: {
+        my $arch = $dconf->getvalue(undef, "arch");
+        skip "undefined arch for in case", 2 unless(defined($arch));
+    like($arch, '/.+/', "can get arch");
+    like($dconf->getvalue(undef, "platform"), "/^$arch" . '-(mandriva|mandrake)-linux-gnu$/', "can get arch");
+    }
+    my $foundhd = 0;
+    my $medias = 0;
+    foreach my $m ($dconf->listmedia()) {
+        $medias++;
+        if (-f $dconf->getfulldpath($m, 'hdlist')) {
+            $foundhd++;
+        } else {
+            print STDERR "$m " . $dconf->getfulldpath($m, 'hdlist') . " not found\n";
+        }
+    }
+    is($foundhd, $medias, "All hdlists can be found");
 }

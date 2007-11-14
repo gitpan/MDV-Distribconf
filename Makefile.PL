@@ -1,4 +1,4 @@
-# $Id: Makefile.PL 56866 2006-08-19 01:16:31Z nanardon $
+# $Id: Makefile.PL 224842 2007-07-11 22:20:40Z nanardon $
 
 use 5.008;
 use strict;
