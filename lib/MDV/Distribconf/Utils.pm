@@ -4,8 +4,9 @@ use strict;
 use warnings;
 use MDV::Packdrakeng;
 use Digest::MD5;
+use Devel::Peek;
 
-our ($VERSION) = (qq$Revision: 231507 $ =~ /(\d+)/)[0];
+our ($VERSION) = (qq$Revision: 232705 $ =~ /(\d+)/)[0];
 
 =head1 NAME
 
@@ -30,27 +31,28 @@ sub hdlist_vs_dir {
     foreach my $dir (@dir) {
         push(@rpms, glob("$dir/*.rpm"));
     }
-    @rpms = sort { ($b =~ m:.*/+(.*):)[0] cmp ($a =~ m:.*/+(.*):)[0] } @rpms;
+    @rpms = sort { ($b =~ m:.*/+(.*):)[0] cmp ($a =~ m:([^/]+)$:)[0] } @rpms;
     if (-f $hdlist and my $pack = MDV::Packdrakeng->open(archive => $hdlist)) {
         my $hdlisttime = (stat($hdlist))[9];
         my (undef, $files, undef) = $pack->getcontent();
         my @hdrs = sort { $b cmp $a } map { "$_.rpm" } @{$files || []};
         my ($r, $h) = ("", "");
         do {
-            my $comp = (($r =~ m:.*/+(.*):)[0] || '') cmp $h;
-            # print "< $r - $h > $comp\n";
-            if ($comp < 0) { push(@only_pack, $h); }
-            elsif ($comp > 0) { push(@only_dir, ($r =~ m:.*/+(.*):)[0]); }
-            elsif ($r && (stat($r))[9] > $hdlisttime) {
+            my $base_r = ($r =~ m:([^/]+)$:)[0] || '';
+            my $comp = ($base_r cmp $h);
+            my $st_d = $r ? (stat($r))[9] : 0;
+            if ($comp < 0 || !defined($st_d)) { push(@only_pack, $h); }
+            elsif ($comp > 0) { push(@only_dir, $base_r); }
+            elsif ($r && ($st_d > $hdlisttime)) {
                 push(@only_pack, $h);
                 push(@only_dir, ($r =~ m:.*/+(.*):)[0]);
             }
 
             if ($comp <= 0) {
-                $h = shift(@hdrs) || "";
+                $h = shift(@hdrs) || '';
             } 
             if ($comp >= 0) {
-                $r = shift(@rpms) || "";
+                $r = shift(@rpms) || '';
             }
         } while (scalar(@rpms) || scalar(@hdrs));
     } else {
