@@ -1,8 +1,8 @@
 package MDV::Distribconf;
 
-# $Id: Distribconf.pm 232708 2007-12-30 04:28:14Z nanardon $
+# $Id$
 
-our $VERSION = '3.14';
+our $VERSION = '4.02';
 
 =head1 NAME
 
@@ -75,6 +75,18 @@ the media name prefixed by C<pubkey_>.
 A human-readable name for the media. By default this is the media path
 (that is, the section name), where slashes have been replaced by
 underscores.
+
+=item B<info>
+
+The xml file containing rpm informations.
+
+=item B<changelog>
+
+The xml file containing rpm changelogs.
+
+=item B<files>
+
+The xml file containing rpm files list.
 
 =back
 
@@ -437,7 +449,22 @@ sub getvalue {
 
     my $default = "";
     for ($var) {
-        /^synthesis$/		and $default = 'synthesis.' . lc($distrib->getvalue($media, 'hdlist', $level));
+        /^path$/		and return $media;
+        /^root$/		and return $distrib->{root};
+        /^(info|files|changelog)$/ and      
+            return "$var." . lc($distrib->getvalue($media, 'name', $level)) . '.xml' . $distrib->getvalue(undef, 'xml-info-suffix');
+	/^synthesis$/		and do {
+	    $default = 'synthesis.' . lc($distrib->getvalue($media, 'hdlist', $level));
+	    # If compression (suffix) chosen differs from default .cz (gzip), be sure to use corresponding suffix
+	    if ($default =~ /.*\.cz$/ and !($distrib->getvalue(undef, 'synthesis-suffix') eq ".cz")) {
+		$default =~ s/\.cz$//g;
+		$default .= $distrib->getvalue(undef, 'synthesis-suffix');
+	}
+	};
+        /^synthesis-filter$/	and $default = ".cz:gzip -9";
+        /^synthesis-suffix$/	and return (split ':', $distrib->getvalue(undef, 'synthesis-filter'))[0];
+        /^xml-info-filter$/	and $default = ".lzma:lzma -5";
+        /^xml-info-suffix$/	and return (split ':', $distrib->getvalue(undef, 'xml-info-filter'))[0];
         /^hdlist$/		and $default = 'hdlist_' . lc($distrib->getvalue($media, 'name', $level)) . '.cz';
         /^pubkey$/		and $default = 'pubkey_' . lc($distrib->getvalue($media, 'name', $level));
         /^(pubkey|hdlist|synthesis)$/ and do {
@@ -452,8 +479,6 @@ sub getvalue {
             return join(',', map { "$_=" . ($distrib->getvalue(undef, $_) || '') }
                 qw(vendor distribution type version branch release arch product));
         };
-        /^path$/		and return $media;
-        /^root$/		and return $distrib->{root};
         /^mediacfg_version$/	and 
             return $distrib->{cfg}->val('media_info', 'mediacfg_version') || 1;
         /^VERSION$/		and do { $default = 'VERSION'; last };
@@ -497,6 +522,10 @@ sub getpath {
     my ($distrib, $media, $var) = @_;
     $distrib->mediaexists($media) or return;
     $var ||= ""; # Avoid undef value
+    if ($var =~ /^(info|files|changelog)$/) {
+        $distrib->getvalue($media, 'xml-info') or return;
+        $distrib->getvalue($media, 'cdmode') or return;
+    }
     my $val = $distrib->getvalue($media, $var);
     $var =~ /^(?:root|VERSION|product\.id|(?:media|info)dir)$/ and return $val;
     my $thispath = $var eq 'path' ? $distrib->{mediadir} : $distrib->{infodir};
@@ -516,17 +545,23 @@ to the media for files having doble location (index for example).
 
 =cut
 
-
 sub getmediapath {
     my ($distrib, $media, $var) = @_;
     my %files = (
-        pubkey => 'pubkey',
-        hdlist => 'hdlist.cz',
-        synthesis => 'synthesis.hdlist.cz',
-        MD5SUM => 'MD5SUM',
-        infodir => '',
+        pubkey      => 'pubkey',
+        hdlist      => 'hdlist.cz',
+        synthesis   => 'synthesis.hdlist' . $distrib->getvalue(undef, 'synthesis-suffix'),
+        MD5SUM      => 'MD5SUM',
+        infodir     => '',
+        info        => 'info.xml' . $distrib->getvalue(undef, 'xml-info-suffix'),
+        files       => 'files.xml'  . $distrib->getvalue(undef, 'xml-info-suffix'),
+        changelog   => 'changelog.xml' . $distrib->getvalue(undef, 'xml-info-suffix'),
     );
     $var eq 'path' and return $distrib->getpath($media, 'path');
+    if ($var =~ /^(info|files|changelog)$/) {
+        $distrib->getvalue($media, 'xml-info') or return;
+        $distrib->getvalue($media, 'cdmode') and return;
+    }
     return $distrib->getpath($media, 'path') . $distrib->{mediainfodir} . "/$files{$var}";
 }
 
@@ -571,11 +606,12 @@ You may want to use this function to ensure you allways the good value.
 sub getdpath {
     my ($distrib, $media, $var) = @_;
 
-    if ($var =~ /^(hdlist|synthesis|pubkey|MD5SUM)$/) {
-        if ($distrib->{type} eq 'mandriva') {
-            return $distrib->getmediapath($media, $var);
-        } else {
+    if ($var =~ /^(hdlist|synthesis|pubkey|MD5SUM|info|files|changelog)$/) {
+        if ($distrib->getvalue($media, 'cdmode')
+            || $distrib->{type} eq 'mandrake') {
             return $distrib->getpath($media, $var);
+        } else {
+            return $distrib->getmediapath($media, $var);
         }
     } else {
         return $distrib->getpath($media, $var);

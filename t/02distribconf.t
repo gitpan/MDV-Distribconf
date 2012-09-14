@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# $Id: 02distribconf.t 10976 2005-10-09 20:56:53Z othauvin $
+# $Id$
 
 use strict;
 use Test::More tests => 7;

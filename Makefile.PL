@@ -1,4 +1,4 @@
-# $Id: Makefile.PL 231527 2007-11-14 21:39:03Z nanardon $
+# $Id$
 
 use 5.008;
 use strict;

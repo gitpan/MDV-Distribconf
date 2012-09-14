@@ -1,13 +1,23 @@
-# http://module-build.sourceforge.net/META-spec.html
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
-name:         MDV-Distribconf
-version:      3.14
-version_from: lib/MDV/Distribconf.pm
-installdirs:  site
+--- #YAML:1.0
+name:               MDV-Distribconf
+version:            4.02
+abstract:           ~
+author:  []
+license:            unknown
+distribution_type:  module
+configure_requires:
+    ExtUtils::MakeMaker:  0
+build_requires:
+    ExtUtils::MakeMaker:  0
 requires:
-    Config::IniFiles:              
-    Digest::MD5:                   
-    MDV::Packdrakeng:              
-
-distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.30_01
+    Config::IniFiles:  ~
+    Digest::MD5:       ~
+    MDV::Packdrakeng:  ~
+no_index:
+    directory:
+        - t
+        - inc
+generated_by:       ExtUtils::MakeMaker version 6.55_02
+meta-spec:
+    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
+    version:  1.4
